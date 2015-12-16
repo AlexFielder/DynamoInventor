@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DynamoInventor.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ButtonNameDynamo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Run Dynamo</Value>
+    </Setting>
+    <Setting Name="ButtonInternalNameDynamo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">RunDynamo</Value>
+    </Setting>
+    <Setting Name="ButtonDescrDynamo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Click this to run Dynamo in Inventor</Value>
+    </Setting>
+    <Setting Name="ButtonTooltipDynamo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Click this to run Dynamo in Inventor</Value>
+    </Setting>
+    <Setting Name="ButtonIconDynamo32x32" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DynamoInventor.logo_square_32x32.ico</Value>
+    </Setting>
+    <Setting Name="ButtonIconDynamo64x64" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DynamoInventor.logo_square_32x32.ico</Value>
+    </Setting>
+    <Setting Name="ribbonPanelDisplayNameDynamo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Dynamo</Value>
+    </Setting>
+    <Setting Name="ribbonPanelInternalName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Dynamo:InventorDynamo:DynamoRibbonPanel</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

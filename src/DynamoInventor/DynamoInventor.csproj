@@ -169,8 +169,14 @@
     <Compile Include="DynamoInventor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="DynamoInventor.X.manifest" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +184,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -195,7 +205,7 @@
     <None Include="Resources\logo_square_inv_temp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\logo_square_32x32.ico" />
+    <EmbeddedResource Include="Resources\logo_square_32x32.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\Inventor\DSInventorNodes\InventorLibrary.csproj">
@@ -217,6 +227,11 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>call "%25VS110COMNTOOLS%25vsvars32"
-			mt.exe -manifest "$(ProjectDir)DynamoInventor.X.manifest" -outputresource:"$(TargetPath)";#2</PostBuildEvent>
+			mt.exe -manifest "$(ProjectDir)DynamoInventor.X.manifest" -outputresource:"$(TargetPath)";#2
+XCopy "$(TargetDir)*" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R /I /S
+<!-- XCopy "$(TargetPath)" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R -->
+<!-- XCopy "$(TargetPath).config" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R -->
+<!-- XCopy "$(TargetDir)$(TargetName).pdb" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R -->
+XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R</PostBuildEvent>
   </PropertyGroup>
 </Project>
