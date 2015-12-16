@@ -30,10 +30,11 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\..\Dynamo\bin\AnyCPU\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -55,6 +56,7 @@
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -79,6 +81,7 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autodesk.Inventor.interop">
@@ -87,29 +90,32 @@
       <HintPath>$(INVENTORAPI)\Autodesk.Inventor.interop.dll</HintPath>
     </Reference>
     <Reference Include="DynamoCore">
-      <HintPath>$(DYNAMOAPI)\DynamoCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DynamoCoreWpf">
-      <HintPath>$(DYNAMOAPI)\DynamoCoreWpf.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCoreWpf.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="DynamoServices">
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoServices.dll</HintPath>
     </Reference>
     <Reference Include="DynamoUnits, Version=0.7.6.3426, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(DYNAMOAPI)\DynamoUnits.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUnits.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DynamoUtilities, Version=0.7.6.3426, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(DYNAMOAPI)\DynamoUtilities.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUtilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Greg">
-      <HintPath>..\..\..\Dynamo\bin\AnyCPU\Debug\Greg.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\Greg.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>$(DYNAMOAPI)\Microsoft.Practices.Prism.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
@@ -119,23 +125,20 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoCore, Version=0.7.6.3495, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(DYNAMOAPI)\ProtoCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\ProtoCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoGeometry">
-      <HintPath>$(DYNAMOAPI)\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoInterface">
-      <HintPath>$(DYNAMOAPI)\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SimpleInjector, Version=2.5.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SimpleInjector.2.5.0\lib\net40-client\SimpleInjector.dll</HintPath>
-    </Reference>
-    <Reference Include="SimpleInjector.Diagnostics">
-      <HintPath>..\packages\SimpleInjector.2.5.0\lib\net40-client\SimpleInjector.Diagnostics.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.3.1.2\lib\net45\SimpleInjector.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
