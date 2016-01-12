@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,7 +42,8 @@
       <HintPath>$(INVENTORAPI)\Autodesk.Inventor.interop.dll</HintPath>
     </Reference>
     <Reference Include="DynamoServices">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoServices.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoServices.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\SimpleInjector.3.1.2\lib\net45\SimpleInjector.dll</HintPath>

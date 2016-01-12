@@ -34,7 +34,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\debug\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -57,6 +57,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -90,32 +91,29 @@
       <HintPath>$(INVENTORAPI)\Autodesk.Inventor.interop.dll</HintPath>
     </Reference>
     <Reference Include="DynamoCore">
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DynamoCoreWpf">
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCoreWpf.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCoreWpf.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="DynamoServices">
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoServices.dll</HintPath>
     </Reference>
     <Reference Include="DynamoUnits, Version=0.7.6.3426, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUnits.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUnits.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DynamoUtilities, Version=0.7.6.3426, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUtilities.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUtilities.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Greg">
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\Greg.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\Greg.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\Microsoft.Practices.Prism.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
@@ -125,15 +123,15 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoCore, Version=0.7.6.3495, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\ProtoCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoGeometry">
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\..\..\Program Files\Dynamo 0.9\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
@@ -141,7 +139,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -169,25 +167,19 @@
     <Compile Include="DynamoInventor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="DynamoInventor.X.manifest" />
+    <None Include="DynamoInventor.X.manifest">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Autodesk.DynamoInventor.Inventor.addin" />
+    <None Include="Autodesk.DynamoInventor.Inventor.addin">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <None Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -205,7 +197,7 @@
     <None Include="Resources\logo_square_inv_temp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\logo_square_32x32.ico" />
+    <None Include="Resources\logo_square_32x32.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\Inventor\DSInventorNodes\InventorLibrary.csproj">
@@ -226,12 +218,10 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>call "%25VS110COMNTOOLS%25vsvars32"
-			mt.exe -manifest "$(ProjectDir)DynamoInventor.X.manifest" -outputresource:"$(TargetPath)";#2
-XCopy "$(TargetDir)*" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R /I /S
-<!-- XCopy "$(TargetPath)" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R -->
-<!-- XCopy "$(TargetPath).config" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R -->
-<!-- XCopy "$(TargetDir)$(TargetName).pdb" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R -->
-XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R</PostBuildEvent>
+    <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32"			
+mt.exe -manifest "$(ProjectDir)DynamoInventor.X.manifest" -outputresource:"$(TargetPath)";#2
+XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25AppData%25\Autodesk\Inventor 2016\Addins\" /Y /R
+<!-- mkdir "C:\Program Files\Dynamo 0.9\Inventor_2016";-->
+XCopy "$(TargetDir)*" "C:\Program Files\Dynamo 0.9\Inventor_2016" /Y /R /I /S</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,13 +1,31 @@
-﻿using Dynamo.Controls;
-using Dynamo.ViewModels;
-using DynamoUnits;
-using Inventor;
-using InventorServices.Persistence;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
+using Inventor;
+
+using Dynamo.Controls;
+using Dynamo.Core;
+using Dynamo.Core.Threading;
+using Dynamo.Models;
+using Dynamo.Services;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
+using DynamoUnits;
+
+using DynamoUtilities;
+using InventorServices.Persistence;
+using DynamoInventor.Models;
+using DynamoInventor;
+using System.IO;
 
 namespace DynamoInventor
 {
@@ -19,10 +37,8 @@ namespace DynamoInventor
         public static double? dynamoViewWidth = null;
         public static double? dynamoViewHeight = null;
         private bool handledCrash = false;
-        //private ButtonDefinition m_buttonDefinition;
-        //private ButtonDefinitionSink_OnExecuteEventHandler ButtonDefinition_OnExecuteEventDelegate;
 
-        public DynamoInventorAddinButton(string displayName, 
+		public DynamoInventorAddinButton(string displayName, 
                                          string internalName, 
                                          CommandTypesEnum commandType, 
                                          string clientId, 
@@ -44,7 +60,7 @@ namespace DynamoInventor
                                          ButtonDisplayEnum buttonDisplayType)
 			: base(displayName, internalName, commandType, clientId, description, tooltip, buttonDisplayType)
 		{		
-        }
+		}
 
 		override protected void ButtonDefinition_OnExecute(NameValueMap context)
 		{
@@ -53,7 +69,8 @@ namespace DynamoInventor
                 if (isRunning == false)
                 {
                     //Start Dynamo!  
-                    //DynamoInventor.SetupDynamoPaths();
+                    DynamoInventor.SetupDynamoPaths();
+
                     string inventorContext = "Inventor " + PersistenceManager.InventorApplication.SoftwareVersion.DisplayVersion;
 
                     //Setup base units.  Need to double check what to do.  The ui default for me is inches, but API always must take cm.
@@ -64,7 +81,21 @@ namespace DynamoInventor
                     //Setup DocumentManager...this is all taken care of on its own.  Reference to active application will happen
                     //when first call to binder.InventorApplication happens
 
-                    Dynamo.Models.DynamoModel inventorDynamoModel = Dynamo.Models.DynamoModel.Start();
+                    //InventorDynamoModel inventorDynamoModel = InventorDynamoModel.Start(
+                    //    new InventorDynamoModel.IInventorStartConfiguration()
+                    //    {
+                    //        StartInTestMode = true,
+                    //        Context = inventorContext,
+                    //        GeometryFactoryPath = DynamoInventor.GetGeometryFactoryPath(DynamoInventor.corePath)
+                    //    });
+
+                    InventorDynamoModel inventorDynamoModel = InventorDynamoModel.Start(
+                        new InventorDynamoModel.InventorStartConfiguration()
+                        {
+                            DynamoCorePath = DynamoInventor.corePath,
+                            Context = inventorContext,
+                            GeometryFactoryPath = DynamoInventor.GetGeometryFactoryPath(DynamoInventor.corePath)
+                        });
 
                     DynamoViewModel dynamoViewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
@@ -98,5 +129,7 @@ namespace DynamoInventor
                 System.Windows.Forms.MessageBox.Show(e.ToString());
 			}
 		}
-	}
+
+        
+    }
 }

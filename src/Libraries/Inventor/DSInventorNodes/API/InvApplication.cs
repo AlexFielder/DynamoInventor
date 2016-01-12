@@ -1,16 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using Inventor;
-using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-using DynamoServices;
-using Dynamo.Models;
-using Dynamo.Utilities;
-using InventorLibrary.GeometryConversion;
 using InventorServices.Persistence;
 
 namespace InventorLibrary.API

@@ -1,16 +1,15 @@
-using Dynamo.Controls;
-using Dynamo.ViewModels;
-using DynamoInventor.Properties;
-using DynamoUnits;
-using Inventor;
-using InventorServices.Persistence;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Windows.Interop;
+using Inventor;
+using Dynamo.PackageManager;
+using DynamoInventor.Properties;
+using Dynamo.Utilities;
+using InventorServices.Persistence;
+using Dynamo.Interfaces;
+using System.IO;
 
 namespace DynamoInventor
 {
@@ -18,43 +17,39 @@ namespace DynamoInventor
     /// This is the primary AddIn Server class that implements the ApplicationAddInServer interface
     /// that all Inventor AddIns are required to implement.
     /// </summary>
-    [GuidAttribute("476f38a1-75f3-450b-a75a-6f030bf012a8")]
+    [GuidAttribute("476f38a1-75f3-450b-a75a-6f030bf012a9")]
     public class DynamoInventor : Inventor.ApplicationAddInServer
     {
         #region Private fields
+        enum Versions { ShapeManager = 220 }
+
         private Inventor.Application inventorApplication;
-        private ButtonDefinition dynamoAddinButton;
+        private DynamoInventorAddinButton dynamoAddinButton;
         private UserInterfaceEvents userInterfaceEvents;
         UserInterfaceManager userInterfaceManager;
         RibbonPanel assemblyRibbonPanel;
         RibbonPanel partRibbonPanel;
         RibbonPanel drawingRibbonPanel;
+        
+        public IPathManager DynamoPathManager { get { return pathManager; } }
+        private readonly IPathManager pathManager;
 
-        private ApplicationEvents m_appEvents = null;
+        private string commandBarInternalName = "Dynamo:InventorDynamo:DynamoCommandBar";
+        private string commandBarDisplayName = "Dynamo";
+        private string ribbonPanelInternalName = "Dynamo:InventorDynamo:DynamoRibbonPanel";
+        private string ribbonPanelDisplayName = "Dynamo";
+        private string buttonInternalName = "Dynamo:InventorDynamo:DynamoButton";
+        private string buttonDisplayName = "Dynamo";
+        private string commandCategoryInternalName = "Dynamo:InventorDynamo:DynamoCommandCat";
+        private string commandCategoryDisplayName = "Dynamo";
 
-        //private string commandBarInternalName = "Dynamo:InventorDynamo:DynamoCommandBar";
-        //private string commandBarDisplayName = "Dynamo";
-        //private string ribbonPanelInternalName = "Dynamo:InventorDynamo:DynamoRibbonPanel";
-        //private string ribbonPanelDisplayName = "Dynamo";
-        //private string buttonInternalName = "Dynamo:InventorDynamo:DynamoButton";
-        //private string buttonDisplayName = "Dynamo";
-        //private string commandCategoryInternalName = "Dynamo:InventorDynamo:DynamoCommandCat";
-        //private string commandCategoryDisplayName = "Dynamo";
+        private Inventor.UserInterfaceEventsSink_OnResetCommandBarsEventHandler UserInterfaceEventsSink_OnResetCommandBarsEventDelegate;
+        private Inventor.UserInterfaceEventsSink_OnResetEnvironmentsEventHandler UserInterfaceEventsSink_OnResetEnvironmentsEventDelegate;
+        private Inventor.UserInterfaceEventsSink_OnResetRibbonInterfaceEventHandler UserInterfaceEventsSink_OnResetRibbonInterfaceEventDelegate;
 
-        //private UserInterfaceEventsSink_OnResetCommandBarsEventHandler UserInterfaceEventsSink_OnResetCommandBarsEventDelegate;
-        //private UserInterfaceEventsSink_OnResetEnvironmentsEventHandler UserInterfaceEventsSink_OnResetEnvironmentsEventDelegate;
-        //private UserInterfaceEventsSink_OnResetRibbonInterfaceEventHandler UserInterfaceEventsSink_OnResetRibbonInterfaceEventDelegate;
-
-        private ButtonDefinitionSink_OnExecuteEventHandler ButtonDefinition_OnExecuteEventDelegate;
-
-        private static bool isRunning = false;
-        public static double? dynamoViewX = null;
-        public static double? dynamoViewY = null;
-        public static double? dynamoViewWidth = null;
-        public static double? dynamoViewHeight = null;
-        //private bool handledCrash = false;
-
-        //private ApplicationEvents appEvents = null;
+        private Inventor.ApplicationEvents appEvents = null;
+        private static AssemblyHelper assemblyHelper;
+        internal static string corePath;
         #endregion
 
         #region Public constructors
@@ -63,7 +58,7 @@ namespace DynamoInventor
             Assembly.LoadFrom(@"C:\Program Files\Dynamo 0.9\DynamoCore.dll");
             // Even though this method has no dependencies on DynamoCore, resolution of DynamoCore is 
             // failing prior to the handler to AssemblyResolve event getting registered.  
-            //SubscribeAssemblyResolvingEvent();
+            SubscribeAssemblyResolvingEvent();
         }
         #endregion
 
@@ -73,101 +68,86 @@ namespace DynamoInventor
         {        
             try
             {
-                //SetupDynamoPaths();
+                SetupDynamoPaths();
                 inventorApplication = addInSiteObject.Application;
                 PersistenceManager.InventorApplication = inventorApplication;
                 userInterfaceManager = inventorApplication.UserInterfaceManager;
 
                 //initialize event delegates
                 userInterfaceEvents = inventorApplication.UserInterfaceManager.UserInterfaceEvents;
-                ControlDefinitions controlDefs = inventorApplication.CommandManager.ControlDefinitions;
 
-                dynamoAddinButton = controlDefs.AddButtonDefinition(
-                    Settings.Default.ButtonNameDynamo,
-                    Settings.Default.ButtonInternalNameDynamo,
-                    CommandTypesEnum.kShapeEditCmdType,
-                    Guid.NewGuid().ToString(),
-                    Settings.Default.ButtonDescrDynamo,
-                    Settings.Default.ButtonTooltipDynamo,
-                    Settings.Default.ButtonIconDynamo32x32,
-                    Settings.Default.ButtonIconDynamo64x64,
-                    ButtonDisplayEnum.kDisplayTextInLearningMode);
+                UserInterfaceEventsSink_OnResetCommandBarsEventDelegate = new UserInterfaceEventsSink_OnResetCommandBarsEventHandler(UserInterfaceEvents_OnResetCommandBars);
+                userInterfaceEvents.OnResetCommandBars += UserInterfaceEventsSink_OnResetCommandBarsEventDelegate;
 
+                UserInterfaceEventsSink_OnResetEnvironmentsEventDelegate = new UserInterfaceEventsSink_OnResetEnvironmentsEventHandler(UserInterfaceEvents_OnResetEnvironments);
+                userInterfaceEvents.OnResetEnvironments += UserInterfaceEventsSink_OnResetEnvironmentsEventDelegate;
 
-                //UserInterfaceEventsSink_OnResetCommandBarsEventDelegate = new UserInterfaceEventsSink_OnResetCommandBarsEventHandler(UserInterfaceEvents_OnResetCommandBars);
-                //userInterfaceEvents.OnResetCommandBars += UserInterfaceEventsSink_OnResetCommandBarsEventDelegate;
+                UserInterfaceEventsSink_OnResetRibbonInterfaceEventDelegate = new UserInterfaceEventsSink_OnResetRibbonInterfaceEventHandler(UserInterfaceEvents_OnResetRibbonInterface);
+                userInterfaceEvents.OnResetRibbonInterface += UserInterfaceEventsSink_OnResetRibbonInterfaceEventDelegate;
 
-                //UserInterfaceEventsSink_OnResetEnvironmentsEventDelegate = new UserInterfaceEventsSink_OnResetEnvironmentsEventHandler(UserInterfaceEvents_OnResetEnvironments);
-                //userInterfaceEvents.OnResetEnvironments += UserInterfaceEventsSink_OnResetEnvironmentsEventDelegate;
+                appEvents = inventorApplication.ApplicationEvents;
+                appEvents.OnActivateDocument += appEvents_OnActivateDocument;
+                appEvents.OnDeactivateDocument += appEvents_OnDeactivateDocument;
 
-                //UserInterfaceEventsSink_OnResetRibbonInterfaceEventDelegate = new UserInterfaceEventsSink_OnResetRibbonInterfaceEventHandler(UserInterfaceEvents_OnResetRibbonInterface);
-                //userInterfaceEvents.OnResetRibbonInterface += UserInterfaceEventsSink_OnResetRibbonInterfaceEventDelegate;
+                Icon dynamoIcon = Resources.logo_square_32x32;
 
-                //appEvents = inventorApplication.ApplicationEvents;
-                //appEvents.OnActivateDocument += appEvents_OnActivateDocument;
-                //appEvents.OnDeactivateDocument += appEvents_OnDeactivateDocument;
+                //retrieve the GUID for this class
+                GuidAttribute addInCLSID;
+                addInCLSID = (GuidAttribute)GuidAttribute.GetCustomAttribute(this.GetType(), typeof(GuidAttribute));
+                string addInCLSIDString;
+                addInCLSIDString = "{" + addInCLSID.Value + "}";
 
-                //Icon dynamoIcon = Resources.logo_square_32x32;
+                dynamoAddinButton = new DynamoInventorAddinButton(
+                        buttonDisplayName, buttonInternalName, CommandTypesEnum.kShapeEditCmdType,
+                        addInCLSIDString, "Initialize Dynamo.",
+                        "Dynamo is a visual programming environment for Inventor.", dynamoIcon, dynamoIcon, ButtonDisplayEnum.kDisplayTextInLearningMode);
 
-                ////retrieve the GUID for this class
-                //GuidAttribute addInCLSID;
-                //addInCLSID = (GuidAttribute)GuidAttribute.GetCustomAttribute(this.GetType(), typeof(GuidAttribute));
-                //string addInCLSIDString;
-                //addInCLSIDString = "{" + addInCLSID.Value + "}";
-
-                //dynamoAddinButton = new DynamoInventorAddinButton(
-                //        buttonDisplayName, buttonInternalName, CommandTypesEnum.kShapeEditCmdType,
-                //        addInCLSIDString, "Initialize Dynamo.",
-                //        "Dynamo is a visual programming environment for Inventor.", dynamoIcon, dynamoIcon, ButtonDisplayEnum.kDisplayTextInLearningMode);
-
-                //CommandCategory assemblyUtilitiesCategory = inventorApplication.CommandManager.CommandCategories.Add(commandCategoryDisplayName, commandCategoryInternalName, addInCLSID);
-                //assemblyUtilitiesCategory.Add(dynamoAddinButton.ButtonDefinition);
+                CommandCategory assemblyUtilitiesCategory = inventorApplication.CommandManager.CommandCategories.Add(commandCategoryDisplayName, commandCategoryInternalName, addInCLSID);
+                assemblyUtilitiesCategory.Add(dynamoAddinButton.ButtonDefinition);
 
                 if (firstTime == true)
                 {
-                    AddToUserInterface();
+                    InterfaceStyleEnum interfaceStyle;
+                    interfaceStyle = userInterfaceManager.InterfaceStyle;
+
+                    if (interfaceStyle == InterfaceStyleEnum.kClassicInterface)
+                    {
+                        CommandBar assemblyUtilityCommandBar;
+
+                        assemblyUtilityCommandBar = userInterfaceManager.CommandBars.Add(commandBarDisplayName,
+                                                                                         commandBarInternalName,
+                                                                                         CommandBarTypeEnum.kRegularCommandBar,
+                                                                                         addInCLSID);
+                    }
+
+                    else
+                    {   
+                        Inventor.Ribbons ribbons = userInterfaceManager.Ribbons;
+                        Inventor.Ribbon assemblyRibbon = ribbons["Assembly"];
+                        RibbonTabs ribbonTabs = assemblyRibbon.RibbonTabs;
+                        RibbonTab assemblyRibbonTab = ribbonTabs["id_AddInsTab"];
+                        RibbonPanels ribbonPanels = assemblyRibbonTab.RibbonPanels;
+                        assemblyRibbonPanel = ribbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
+                        CommandControls assemblyRibbonPanelCtrls = assemblyRibbonPanel.CommandControls;
+                        CommandControl assemblyCmdBtnCmdCtrl = assemblyRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false); 
+
+                        Inventor.Ribbon partRibbon = ribbons["Part"];
+                        RibbonTabs partRibbonTabs = partRibbon.RibbonTabs;
+                        RibbonTab modelRibbonTab = partRibbonTabs["id_AddInsTab"];
+                        RibbonPanels partRibbonPanels = modelRibbonTab.RibbonPanels;
+                        partRibbonPanel = partRibbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
+                        CommandControls partRibbonPanelCtrls = partRibbonPanel.CommandControls;
+                        CommandControl partCmdBtnCmdCtrl = partRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);
+
+                        Inventor.Ribbon drawingRibbon = ribbons["Drawing"];
+                        RibbonTabs drawingRibbonTabs = drawingRibbon.RibbonTabs;
+                        RibbonTab drawingRibbonTab = drawingRibbonTabs["id_AddInsTab"];
+                        RibbonPanels drawingRibbonPanels = drawingRibbonTab.RibbonPanels;
+                        drawingRibbonPanel = drawingRibbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
+                        CommandControls drawingRibbonPanelCtrls = drawingRibbonPanel.CommandControls;
+                        CommandControl drawingCmdBtnCmdCtrl = drawingRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);  
+                    }
                 }
-                //    InterfaceStyleEnum interfaceStyle;
-                //    interfaceStyle = userInterfaceManager.InterfaceStyle;
-
-                //    if (interfaceStyle == InterfaceStyleEnum.kClassicInterface)
-                //    {
-                //        CommandBar assemblyUtilityCommandBar;
-
-                //        assemblyUtilityCommandBar = userInterfaceManager.CommandBars.Add(commandBarDisplayName,
-                //                                                                         commandBarInternalName,
-                //                                                                         CommandBarTypeEnum.kRegularCommandBar,
-                //                                                                         addInCLSID);
-                //    }
-
-                //    else
-                //    {
-                //        Ribbons ribbons = userInterfaceManager.Ribbons;
-                //        Ribbon assemblyRibbon = ribbons["Assembly"];
-                //        RibbonTabs ribbonTabs = assemblyRibbon.RibbonTabs;
-                //        RibbonTab assemblyRibbonTab = ribbonTabs["id_AddInsTab"];
-                //        RibbonPanels ribbonPanels = assemblyRibbonTab.RibbonPanels;
-                //        assemblyRibbonPanel = ribbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
-                //        CommandControls assemblyRibbonPanelCtrls = assemblyRibbonPanel.CommandControls;
-                //        CommandControl assemblyCmdBtnCmdCtrl = assemblyRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);
-
-                //        Ribbon partRibbon = ribbons["Part"];
-                //        RibbonTabs partRibbonTabs = partRibbon.RibbonTabs;
-                //        RibbonTab modelRibbonTab = partRibbonTabs["id_AddInsTab"];
-                //        RibbonPanels partRibbonPanels = modelRibbonTab.RibbonPanels;
-                //        partRibbonPanel = partRibbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
-                //        CommandControls partRibbonPanelCtrls = partRibbonPanel.CommandControls;
-                //        CommandControl partCmdBtnCmdCtrl = partRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);
-
-                //        Ribbon drawingRibbon = ribbons["Drawing"];
-                //        RibbonTabs drawingRibbonTabs = drawingRibbon.RibbonTabs;
-                //        RibbonTab drawingRibbonTab = drawingRibbonTabs["id_AddInsTab"];
-                //        RibbonPanels drawingRibbonPanels = drawingRibbonTab.RibbonPanels;
-                //        drawingRibbonPanel = drawingRibbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
-                //        CommandControls drawingRibbonPanelCtrls = drawingRibbonPanel.CommandControls;
-                //        CommandControl drawingCmdBtnCmdCtrl = drawingRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);  
-                //    }
-                //}
             }
 
             catch (Exception e)
@@ -176,108 +156,24 @@ namespace DynamoInventor
             }
         }
 
-        private void AddToUserInterface()
+        void appEvents_OnDeactivateDocument(_Document documentObject, EventTimingEnum beforeOrAfter, NameValueMap context, out HandlingCodeEnum handlingCode)
         {
-            Ribbons ribbons = userInterfaceManager.Ribbons;
-            Ribbon assemblyRibbon = ribbons["Assembly"];
-            RibbonTabs ribbonTabs = assemblyRibbon.RibbonTabs;
-            RibbonTab assemblyRibbonTab = ribbonTabs["id_AddInsTab"];
-            RibbonPanels ribbonPanels = assemblyRibbonTab.RibbonPanels;
-            assemblyRibbonPanel = ribbonPanels.Add(Settings.Default.ribbonPanelDisplayNameDynamo, Settings.Default.ribbonPanelInternalName, Guid.NewGuid().ToString(), "", false);
-            CommandControls assemblyRibbonPanelCtrls = assemblyRibbonPanel.CommandControls;
-            CommandControl assemblyCmdBtnCmdCtrl = assemblyRibbonPanelCtrls.AddButton(dynamoAddinButton, true, true, "", false);
-
-            Ribbon partRibbon = ribbons["Part"];
-            RibbonTabs partRibbonTabs = partRibbon.RibbonTabs;
-            RibbonTab modelRibbonTab = partRibbonTabs["id_AddInsTab"];
-            RibbonPanels partRibbonPanels = modelRibbonTab.RibbonPanels;
-            partRibbonPanel = partRibbonPanels.Add(Settings.Default.ribbonPanelDisplayNameDynamo, Settings.Default.ribbonPanelInternalName, Guid.NewGuid().ToString(), "", false);
-            CommandControls partRibbonPanelCtrls = partRibbonPanel.CommandControls;
-            CommandControl partCmdBtnCmdCtrl = partRibbonPanelCtrls.AddButton(dynamoAddinButton, true, true, "", false);
-
-            Ribbon drawingRibbon = ribbons["Drawing"];
-            RibbonTabs drawingRibbonTabs = drawingRibbon.RibbonTabs;
-            RibbonTab drawingRibbonTab = drawingRibbonTabs["id_AddInsTab"];
-            RibbonPanels drawingRibbonPanels = drawingRibbonTab.RibbonPanels;
-            drawingRibbonPanel = drawingRibbonPanels.Add(Settings.Default.ribbonPanelDisplayNameDynamo, Settings.Default.ribbonPanelInternalName, Guid.NewGuid().ToString(), "", false);
-            CommandControls drawingRibbonPanelCtrls = drawingRibbonPanel.CommandControls;
-            CommandControl drawingCmdBtnCmdCtrl = drawingRibbonPanelCtrls.AddButton(dynamoAddinButton, true, true, "", false);
-            ButtonDefinition_OnExecuteEventDelegate = new ButtonDefinitionSink_OnExecuteEventHandler(DynamoAddinButton_OnExecute);
-            dynamoAddinButton.OnExecute += ButtonDefinition_OnExecuteEventDelegate;
-
+            handlingCode = HandlingCodeEnum.kEventNotHandled;
+            if (beforeOrAfter == EventTimingEnum.kBefore)
+            {
+                //I think it is probably not necessary to register these events as the registration will happen on its own in InventorServices.
+                //PersistenceManager.ResetOnDocumentDeactivate(); 
+            }       
         }
 
-        private void DynamoAddinButton_OnExecute(NameValueMap Context)
+        void appEvents_OnActivateDocument(_Document documentObject, EventTimingEnum beforeOrAfter, NameValueMap context, out HandlingCodeEnum handlingCode)
         {
-            try
+            handlingCode = HandlingCodeEnum.kEventNotHandled;
+            if (beforeOrAfter == EventTimingEnum.kAfter)
             {
-                if (isRunning == false)
-                {
-                    //Start Dynamo!  
-                    //DynamoInventor.SetupDynamoPaths();
-                    string inventorContext = "Inventor " + PersistenceManager.InventorApplication.SoftwareVersion.DisplayVersion;
-
-                    //Setup base units.  Need to double check what to do.  The ui default for me is inches, but API always must take cm.
-                    BaseUnit.HostApplicationInternalAreaUnit = AreaUnit.SquareCentimeter;
-                    BaseUnit.HostApplicationInternalLengthUnit = LengthUnit.Centimeter;
-                    BaseUnit.HostApplicationInternalVolumeUnit = VolumeUnit.CubicCentimeter;
-
-                    //Setup DocumentManager...this is all taken care of on its own.  Reference to active application will happen
-                    //when first call to binder.InventorApplication happens
-
-                    Dynamo.Models.DynamoModel inventorDynamoModel = Dynamo.Models.DynamoModel.Start();
-
-                    DynamoViewModel dynamoViewModel = DynamoViewModel.Start(
-                    new DynamoViewModel.StartConfiguration()
-                    {
-                        DynamoModel = inventorDynamoModel
-                    });
-
-
-                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
-                    var dynamoView = new DynamoView(dynamoViewModel);
-                    new WindowInteropHelper(dynamoView).Owner = mwHandle;
-
-                    //handledCrash = false;
-                    dynamoView.Show();
-                    isRunning = true;
-                }
-
-                else if (isRunning == true)
-                {
-                    System.Windows.Forms.MessageBox.Show("Dynamo is already running.");
-                }
-
-                else
-                {
-                    System.Windows.Forms.MessageBox.Show("Something terrible happened.");
-                }
-            }
-
-            catch (Exception e)
-            {
-                System.Windows.Forms.MessageBox.Show(e.ToString());
-            }
+                //PersistenceManager.ResetOnDocumentActivate(documentObject);
+            }         
         }
-
-        //void appEvents_OnDeactivateDocument(_Document documentObject, EventTimingEnum beforeOrAfter, NameValueMap context, out HandlingCodeEnum handlingCode)
-        //{
-        //    handlingCode = HandlingCodeEnum.kEventNotHandled;
-        //    if (beforeOrAfter == EventTimingEnum.kBefore)
-        //    {
-        //        //I think it is probably not necessary to register these events as the registration will happen on its own in InventorServices.
-        //        //PersistenceManager.ResetOnDocumentDeactivate(); 
-        //    }       
-        //}
-
-        //void appEvents_OnActivateDocument(_Document documentObject, EventTimingEnum beforeOrAfter, NameValueMap context, out HandlingCodeEnum handlingCode)
-        //{
-        //    handlingCode = HandlingCodeEnum.kEventNotHandled;
-        //    if (beforeOrAfter == EventTimingEnum.kAfter)
-        //    {
-        //        //PersistenceManager.ResetOnDocumentActivate(documentObject);
-        //    }         
-        //}
 
         public void Deactivate()
         {
@@ -287,80 +183,80 @@ namespace DynamoInventor
             GC.WaitForPendingFinalizers();
         }
 
-        //private void UserInterfaceEvents_OnResetCommandBars(ObjectsEnumerator commandBars, NameValueMap context)
-        //{
-        //    try
-        //    {
-        //        CommandBar commandBar;
-        //        for (int commandBarCt = 1; commandBarCt <= commandBars.Count; commandBarCt++)
-        //        {
-        //            commandBar = (Inventor.CommandBar)commandBars[commandBarCt];
-        //            if (commandBar.InternalName == commandBarInternalName)
-        //            {
-        //                commandBar.Controls.AddButton(dynamoAddinButton.ButtonDefinition, 0);
-        //                return;
-        //            }
-        //        }
-        //    }
+        private void UserInterfaceEvents_OnResetCommandBars(ObjectsEnumerator commandBars, NameValueMap context)
+        {
+            try
+            {
+                CommandBar commandBar;
+                for (int commandBarCt = 1; commandBarCt <= commandBars.Count; commandBarCt++)
+                {
+                    commandBar = (Inventor.CommandBar)commandBars[commandBarCt];
+                    if (commandBar.InternalName == commandBarInternalName)
+                    {
+                        commandBar.Controls.AddButton(dynamoAddinButton.ButtonDefinition, 0);
+                        return;
+                    }
+                }
+            }
 
-        //    catch (Exception e)
-        //    {
-        //        MessageBox.Show(e.ToString());
-        //    }
-        //}
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
 
-        //private void UserInterfaceEvents_OnResetEnvironments(ObjectsEnumerator environments, NameValueMap context)
-        //{
-        //    //TODO: Fix this
-        //    try
-        //    {
-        //        Inventor.Environment environment;
-        //        for (int i = 1; i <= environments.Count; i++)
-        //        {
-        //            environment = (Inventor.Environment)environments[i];
-        //            if (environment.InternalName == "AMxAssemblyEnvironment")
-        //            {
-        //                environment.PanelBar.CommandBarList.Add(inventorApplication.UserInterfaceManager.CommandBars[commandBarInternalName]);
-        //            }
-        //        }
-        //    }
+        private void UserInterfaceEvents_OnResetEnvironments(ObjectsEnumerator environments, NameValueMap context)
+        {
+            //TODO: Fix this
+            try
+            {
+                Inventor.Environment environment;
+                for (int i = 1; i <= environments.Count; i++)
+                {
+                    environment = (Inventor.Environment)environments[i];
+                    if (environment.InternalName == "AMxAssemblyEnvironment")
+                    {
+                        environment.PanelBar.CommandBarList.Add(inventorApplication.UserInterfaceManager.CommandBars[commandBarInternalName]);
+                    }
+                }
+            }
 
-        //    catch (Exception e)
-        //    {
-        //        MessageBox.Show(e.ToString());
-        //    }
-        //}
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
 
-        //private void UserInterfaceEvents_OnResetRibbonInterface(NameValueMap context)
-        //{
-        //    //TODO: Fix this
-        //    try
-        //    {
-        //        //get the ribbon associated with part document
-        //        Inventor.Ribbons ribbons = userInterfaceManager.Ribbons;
-        //        Inventor.Ribbon assemblyRibbon = ribbons["Assembly"];
+        private void UserInterfaceEvents_OnResetRibbonInterface(NameValueMap context)
+        {
+            //TODO: Fix this
+            try
+            {
+                //get the ribbon associated with part document
+                Inventor.Ribbons ribbons = userInterfaceManager.Ribbons;
+                Inventor.Ribbon assemblyRibbon = ribbons["Assembly"];
 
-        //        //get the tabls associated with part ribbon
-        //        RibbonTabs ribbonTabs = assemblyRibbon.RibbonTabs;
-        //        RibbonTab assemblyRibbonTab = ribbonTabs["id_Assembly"];
+                //get the tabls associated with part ribbon
+                RibbonTabs ribbonTabs = assemblyRibbon.RibbonTabs;
+                RibbonTab assemblyRibbonTab = ribbonTabs["id_Assembly"];
 
-        //        //create a new panel with the tab
-        //        RibbonPanels ribbonPanels = assemblyRibbonTab.RibbonPanels;
-        //        assemblyRibbonPanel = ribbonPanels.Add(ribbonPanelDisplayName, 
-        //                                             ribbonPanelInternalName,
-        //                                             "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", 
-        //                                             "", 
-        //                                             false);
+                //create a new panel with the tab
+                RibbonPanels ribbonPanels = assemblyRibbonTab.RibbonPanels;
+                assemblyRibbonPanel = ribbonPanels.Add(ribbonPanelDisplayName, 
+                                                     ribbonPanelInternalName,
+                                                     "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", 
+                                                     "", 
+                                                     false);
 
-        //        CommandControls assemblyRibbonPanelCtrls = assemblyRibbonPanel.CommandControls;
-        //        CommandControl copyUtilCmdBtnCmdCtrl = assemblyRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);
-        //    }
+                CommandControls assemblyRibbonPanelCtrls = assemblyRibbonPanel.CommandControls;
+                CommandControl copyUtilCmdBtnCmdCtrl = assemblyRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);
+            }
 
-        //    catch (Exception e)
-        //    {
-        //        MessageBox.Show(e.ToString());
-        //    }
-        //}
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
 
         /// <summary>
         /// Automation is part of the ApplicationAddInServer implementation.
@@ -379,35 +275,84 @@ namespace DynamoInventor
         }
         #endregion
 
-        //public static void SetupDynamoPaths()
-        //{
+        public static void SetupDynamoPaths()
+        {
+            UpdateSystemPathForProcess();
+            //this is getting the parent directory - in this case: "C:\Program Files\Dynamo 0.9"
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyDirectory = System.IO.Path.GetDirectoryName(assemblyLocation);
+            var parentDirectory = Directory.GetParent(assemblyDirectory);
+            corePath = parentDirectory.FullName;
 
-        //    //string assDir = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string assDir = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string moduleRootFolder = System.IO.Path.GetDirectoryName(assDir);
 
-        //    //// Add the Inventor_20xx folder for assembly resolution
-        //    //pathManager.Instance.AddResolutionPath(assDir);
+            var resolutionPaths = new[]
+            {
+                System.IO.Path.Combine(moduleRootFolder, "nodes")
+            };
 
-        //    //// Setup the core paths
-        //    //// TODO currently DynamoInventor's output path is set to the same one as DynamoCore.
-        //    //// When DynamoInventor is in the Inventor_20xx folder, the application is somehow 
-        //    //// trying to resolve the Dynamo dependencies prior to registering a handler to the 
-        //    //// AssemblyResolve event, so for now DynamoInventor is in Dynamo's debug path and the other
-        //    //// dlls for this project are in the Inventor_20xx folder below.
-        //    //// This doesn't hurt anything for now, but once 2016 comes out it will be a problem.
-        //    ////DynamoPathManager.Instance.InitializeCore(System.IO.Path.GetFullPath(assDir + @"\.."));
-        //    //DynamoPathManager.Instance.InitializeCore("C:\\Projects\\Dynamo\\Dynamo\\bin\\AnyCPU\\Debug");
+            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly; 
+            // Add the Inventor_20xx folder for assembly resolution
+            //DynamoPathManager.Instance.AddResolutionPath(assDir);
+            //DynamoPathManager.AddResolutionPath(assDir);
+
+            // Setup the core paths
+            // TODO currently DynamoInventor's output path is set to the same one as DynamoCore.
+            // When DynamoInventor is in the Inventor_20xx folder, the application is somehow 
+            // trying to resolve the Dynamo dependencies prior to registering a handler to the 
+            // AssemblyResolve event, so for now DynamoInventor is in Dynamo's debug path and the other
+            // dlls for this project are in the Inventor_20xx folder below.
+            // This doesn't hurt anything for now, but once 2016 comes out it will be a problem.
+            //DynamoPathManager.Instance.InitializeCore(System.IO.Path.GetFullPath(assDir + @"\.."));
+            //DynamoPathManager.Instance.InitializeCore(@"C:\Program Files\Dynamo 0.9");
+            
+
+            // Add Revit-specific paths for loading.
+            ///DynamoPathManager.Instance.AddPreloadLibrary(System.IO.Path.Combine(assDir, "Inventor_2015\\InventorLibrary.dll"));
+
+            // TODO: Fix this for versioning
+            //DynamoPathManager.Instance.SetLibGPath("219");
+        }
+
+        /// <summary>
+        /// Add the main exec path to the system PATH
+        /// This is required to pickup certain dlls.
+        /// </summary>
+        private static void UpdateSystemPathForProcess()
+        {
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyDirectory = System.IO.Path.GetDirectoryName(assemblyLocation);
+            var parentDirectory = Directory.GetParent(assemblyDirectory);
+            var corePath = parentDirectory.FullName;
 
 
-        //    //// Add Revit-specific paths for loading.
-        //    //DynamoPathManager.Instance.AddPreloadLibrary(System.IO.Path.Combine(assDir, "Inventor_2015\\InventorLibrary.dll"));
+            var path =
+                    System.Environment.GetEnvironmentVariable(
+                        "Path",
+                        EnvironmentVariableTarget.Process) + ";" + corePath;
+            System.Environment.SetEnvironmentVariable("Path", path, EnvironmentVariableTarget.Process);
+        }
 
-        //    //// TODO: Fix this for versioning
-        //    //DynamoPathManager.Instance.SetLibGPath("219");
-        //}
+        public static string GetGeometryFactoryPath(string corePath)
+        {
+            var dynamoAsmPath = System.IO.Path.Combine(corePath, "DynamoShapeManager.dll");
+            var assembly = Assembly.LoadFrom(dynamoAsmPath);
+            if (assembly == null)
+                throw new FileNotFoundException("File not found", dynamoAsmPath);
 
-        //private void SubscribeAssemblyResolvingEvent()
-        //{
-        //    AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly();
-        //}
+            var utilities = assembly.GetType("DynamoShapeManager.Utilities");
+            var getGeometryFactoryPath = utilities.GetMethod("GetGeometryFactoryPath");
+
+            return (getGeometryFactoryPath.Invoke(null,
+                new object[] { corePath, Versions.ShapeManager }) as string);
+        }
+
+        private void SubscribeAssemblyResolvingEvent()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
+        }
+        
     }
 }

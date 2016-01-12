@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,22 +42,26 @@
       <HintPath>$(INVENTORAPI)\Autodesk.Inventor.interop.dll</HintPath>
     </Reference>
     <Reference Include="DynamoCore">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DynamoServices">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoServices.dll</HintPath>
-    </Reference>
-    <Reference Include="DynamoUtilities">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUtilities.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DynamoUtilities">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUtilities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
     <Reference Include="ProtoGeometry">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">

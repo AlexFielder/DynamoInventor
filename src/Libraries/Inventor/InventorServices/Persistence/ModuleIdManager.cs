@@ -1,7 +1,7 @@
-﻿using System;
+﻿using DynamoServices;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using DynamoServices;
 
 namespace InventorServices.Persistence
 {
