@@ -59,14 +59,14 @@ namespace DynamoInventor
 
         #region Public constructors
 
-        //public DynamoInventor()
-        //{
-        //    Debugger.Break();
-        //    Assembly.LoadFrom(@"C:\Program Files\Dynamo 0.9\DynamoCore.dll");
-        //    // Even though this method has no dependencies on DynamoCore, resolution of DynamoCore is
-        //    // failing prior to the handler to AssemblyResolve event getting registered.
-        //    SubscribeAssemblyResolvingEvent();
-        //}
+        public DynamoInventor()
+        {
+            Debugger.Break();
+            Assembly.LoadFrom(@"C:\Program Files\Dynamo 0.9\DynamoCore.dll");
+            // Even though this method has no dependencies on DynamoCore, resolution of DynamoCore is
+            // failing prior to the handler to AssemblyResolve event getting registered.
+            SubscribeAssemblyResolvingEvent();
+        }
 
         #endregion Public constructors
 

@@ -112,9 +112,11 @@
       <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\Greg.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="InventorServices, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Inventor\InventorServices\bin\Debug\InventorServices.dll</HintPath>
+    <Reference Include="InventorLibrary">
+      <HintPath>..\Libraries\Inventor\DSInventorNodes\bin\debug\InventorLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="InventorServices">
+      <HintPath>..\Libraries\Inventor\DSInventorNodes\bin\debug\InventorServices.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\Microsoft.Practices.Prism.dll</HintPath>
@@ -224,8 +226,11 @@
     </PreBuildEvent>
     <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32"			
 mt.exe -manifest "$(ProjectDir)DynamoInventor.X.manifest" -outputresource:"$(TargetPath)";#2
+del /q "C:\Program Files\Autodesk\Inventor 2016\bin\$(TargetName)\*.*";
+del /q "C:\Program Files\Autodesk\Inventor 2016\bin\$(TargetName)\";
+mkdir "C:\Program Files\Autodesk\Inventor 2016\bin\$(TargetName)\";
 XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25AppData%25\Autodesk\Inventor 2016\Addins\" /Y /R
-<!-- mkdir "C:\Program Files\Dynamo 0.9\Inventor_2016";-->
-XCopy "$(TargetDir)*" "C:\Program Files\Dynamo 0.9\Inventor_2016" /Y /R /I /S</PostBuildEvent>
+
+XCopy "$(TargetDir)*" "C:\Program Files\Autodesk\Inventor 2016\bin\$(TargetName)\" /Y /R /I /S</PostBuildEvent>
   </PropertyGroup>
 </Project>
