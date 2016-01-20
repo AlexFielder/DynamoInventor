@@ -4,8 +4,8 @@
   <ClientId>{476f38a1-75f3-450b-a75a-6f030bf012a9}</ClientId>
   <DisplayName>DynamoInventor</DisplayName>
   <Description>DynamoInventor</Description>
-  <Assembly>DynamoInventor\DynamoInventor.dll</Assembly>
-  <!--<Assembly>C:\Program Files\Dynamo 0.9\Inventor_2016\DynamoInventor.dll</Assembly>-->
+  <!--<Assembly>DynamoInventor\DynamoInventor.dll</Assembly>-->
+  <Assembly>C:\Program Files\Dynamo 0.9\Inventor_2016\DynamoInventor.dll</Assembly>
   <LoadOnStartUp>1</LoadOnStartUp>
   <UserUnloadable>1</UserUnloadable>
   <Hidden>0</Hidden>

@@ -226,11 +226,10 @@
     </PreBuildEvent>
     <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32"			
 mt.exe -manifest "$(ProjectDir)DynamoInventor.X.manifest" -outputresource:"$(TargetPath)";#2
-del /q "C:\Program Files\Autodesk\Inventor 2016\bin\$(TargetName)\*.*";
-del /q "C:\Program Files\Autodesk\Inventor 2016\bin\$(TargetName)\";
-mkdir "C:\Program Files\Autodesk\Inventor 2016\bin\$(TargetName)\";
-XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25AppData%25\Autodesk\Inventor 2016\Addins\" /Y /R
-
-XCopy "$(TargetDir)*" "C:\Program Files\Autodesk\Inventor 2016\bin\$(TargetName)\" /Y /R /I /S</PostBuildEvent>
+del /q "C:\Program Files\Dynamo 0.9\Inventor_2016\*.*";
+del /q "C:\Program Files\Dynamo 0.9\Inventor_2016\";
+mkdir "C:\Program Files\Dynamo 0.9\Inventor_2016\";
+XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25AppData%25\Autodesk\Inventor 2016\Addins\" /Y /R   
+XCopy "$(TargetDir)*" "C:\Program Files\Dynamo 0.9\Inventor_2016\" /Y /R /I /S</PostBuildEvent>
   </PropertyGroup>
 </Project>

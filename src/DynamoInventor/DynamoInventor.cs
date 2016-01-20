@@ -59,14 +59,14 @@ namespace DynamoInventor
 
         #region Public constructors
 
-        public DynamoInventor()
-        {
-            Debugger.Break();
-            Assembly.LoadFrom(@"C:\Program Files\Dynamo 0.9\DynamoCore.dll");
-            // Even though this method has no dependencies on DynamoCore, resolution of DynamoCore is
-            // failing prior to the handler to AssemblyResolve event getting registered.
-            SubscribeAssemblyResolvingEvent();
-        }
+        //public DynamoInventor()
+        //{
+        //    Debugger.Break();
+        //    Assembly.LoadFrom(@"C:\Program Files\Dynamo 0.9\DynamoCore.dll");
+        //    // Even though this method has no dependencies on DynamoCore, resolution of DynamoCore is
+        //    // failing prior to the handler to AssemblyResolve event getting registered.
+        //    SubscribeAssemblyResolvingEvent();
+        //}
 
         #endregion Public constructors
 
@@ -75,7 +75,8 @@ namespace DynamoInventor
         public void Activate(Inventor.ApplicationAddInSite addInSiteObject, bool firstTime)
         {
             Debugger.Break();
-            currentDomain.AssemblyResolve += new ResolveEventHandler(MyResolveEventHandler);
+            SubscribeAssemblyResolvingEvent();
+            //currentDomain.AssemblyResolve += new ResolveEventHandler(MyResolveEventHandler);
             try
             {
                 SetupDynamoPaths();
@@ -136,7 +137,7 @@ namespace DynamoInventor
                         RibbonTabs ribbonTabs = assemblyRibbon.RibbonTabs;
                         RibbonTab assemblyRibbonTab = ribbonTabs["id_AddInsTab"];
                         RibbonPanels ribbonPanels = assemblyRibbonTab.RibbonPanels;
-                        assemblyRibbonPanel = ribbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
+                        assemblyRibbonPanel = ribbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, Guid.NewGuid().ToString(), "", false);
                         CommandControls assemblyRibbonPanelCtrls = assemblyRibbonPanel.CommandControls;
                         CommandControl assemblyCmdBtnCmdCtrl = assemblyRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);
 
@@ -144,7 +145,7 @@ namespace DynamoInventor
                         RibbonTabs partRibbonTabs = partRibbon.RibbonTabs;
                         RibbonTab modelRibbonTab = partRibbonTabs["id_AddInsTab"];
                         RibbonPanels partRibbonPanels = modelRibbonTab.RibbonPanels;
-                        partRibbonPanel = partRibbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
+                        partRibbonPanel = partRibbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, Guid.NewGuid().ToString(), "", false);
                         CommandControls partRibbonPanelCtrls = partRibbonPanel.CommandControls;
                         CommandControl partCmdBtnCmdCtrl = partRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);
 
@@ -152,7 +153,7 @@ namespace DynamoInventor
                         RibbonTabs drawingRibbonTabs = drawingRibbon.RibbonTabs;
                         RibbonTab drawingRibbonTab = drawingRibbonTabs["id_AddInsTab"];
                         RibbonPanels drawingRibbonPanels = drawingRibbonTab.RibbonPanels;
-                        drawingRibbonPanel = drawingRibbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}", "", false);
+                        drawingRibbonPanel = drawingRibbonPanels.Add(ribbonPanelDisplayName, ribbonPanelInternalName, Guid.NewGuid().ToString(), "", false);
                         CommandControls drawingRibbonPanelCtrls = drawingRibbonPanel.CommandControls;
                         CommandControl drawingCmdBtnCmdCtrl = drawingRibbonPanelCtrls.AddButton(dynamoAddinButton.ButtonDefinition, true, true, "", false);
                     }
@@ -279,7 +280,7 @@ namespace DynamoInventor
                 RibbonPanels ribbonPanels = assemblyRibbonTab.RibbonPanels;
                 assemblyRibbonPanel = ribbonPanels.Add(ribbonPanelDisplayName,
                                                      ribbonPanelInternalName,
-                                                     "{DB59D9A7-EE4C-434A-BB5A-F93E8866E872}",
+                                                     Guid.NewGuid().ToString(),
                                                      "",
                                                      false);
 
@@ -384,7 +385,44 @@ namespace DynamoInventor
 
         private void SubscribeAssemblyResolvingEvent()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+        }
+
+        /// <summary>
+        /// Handler to the ApplicationDomain's AssemblyResolve event.
+        /// If an assembly's location cannot be resolved, an exception is
+        /// thrown. Failure to resolve an assembly will leave Dynamo in 
+        /// a bad state, so we should throw an exception here which gets caught 
+        /// by our unhandled exception handler and presents the crash dialogue.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        {
+            var assemblyPath = string.Empty;
+            var assemblyName = new AssemblyName(args.Name).Name + ".dll";
+
+            try
+            {
+                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                var assemblyDirectory = System.IO.Path.GetDirectoryName(assemblyLocation);
+
+                // Try "Dynamo 0.x\Revit_20xx" folder first...
+                assemblyPath = System.IO.Path.Combine(assemblyDirectory, assemblyName);
+                if (!System.IO.File.Exists(assemblyPath))
+                {
+                    // If assembly cannot be found, try in "Dynamo 0.x" folder.
+                    var parentDirectory = Directory.GetParent(assemblyDirectory);
+                    assemblyPath = System.IO.Path.Combine(parentDirectory.FullName, assemblyName);
+                }
+
+                return (System.IO.File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("The location of the assembly, {0} could not be resolved for loading.", assemblyPath), ex);
+            }
         }
     }
 }
