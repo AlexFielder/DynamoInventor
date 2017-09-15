@@ -28,18 +28,7 @@ namespace DynamoInventor.Models
 
             public string DynamoCorePath { get; set; }
 
-            public string DynamoHostPath
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            public string DynamoHostPath { get; set; }
 
             public IEnumerable<IExtension> Extensions { get; set; }
             
@@ -57,44 +46,11 @@ namespace DynamoInventor.Models
 
             public IUpdateManager UpdateManager { get; set; }
 
-            TaskProcessMode IStartConfiguration.ProcessMode
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
+            TaskProcessMode IStartConfiguration.ProcessMode { get; set; }
 
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            ISchedulerThread IStartConfiguration.SchedulerThread { get; set; }
 
-            ISchedulerThread IStartConfiguration.SchedulerThread
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            IUpdateManager IStartConfiguration.UpdateManager
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            IUpdateManager IStartConfiguration.UpdateManager { get; set; }
         }
         public new static InventorDynamoModel Start()
         {

@@ -24,7 +24,7 @@ namespace DynamoInventor
         #region Private fields
 
         private enum Versions
-        { ShapeManager = 220 }
+        { ShapeManager = 221 }
 
         private Inventor.Application inventorApplication;
         private DynamoInventorAddinButton dynamoAddinButton;
@@ -315,13 +315,15 @@ namespace DynamoInventor
         {
             UpdateSystemPathForProcess();
             //this is getting the parent directory - in this case: "C:\Program Files\Dynamo 0.9"
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            //var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyLocation = @"C:\Program Files\Dynamo\Dynamo Core\1.3\DynamoShapeManager.dll";
             var assemblyDirectory = System.IO.Path.GetDirectoryName(assemblyLocation);
             var parentDirectory = Directory.GetParent(assemblyDirectory);
-            corePath = parentDirectory.FullName;
+            corePath = assemblyDirectory; // parentDirectory.FullName;
 
             string assDir = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string moduleRootFolder = System.IO.Path.GetDirectoryName(assDir);
+            string moduleRootFolder = assemblyDirectory;
+            //string moduleRootFolder = System.IO.Path.GetDirectoryName(assDir);
 
             var resolutionPaths = new[]
             {
@@ -357,7 +359,8 @@ namespace DynamoInventor
         /// </summary>
         private static void UpdateSystemPathForProcess()
         {
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyLocation = @"C:\Program Files\Dynamo\Dynamo Core\1.3\DynamoShapeManager.dll";
+            //var assemblyLocation = Assembly.GetExecutingAssembly().Location;
             var assemblyDirectory = System.IO.Path.GetDirectoryName(assemblyLocation);
             var parentDirectory = Directory.GetParent(assemblyDirectory);
             var corePath = parentDirectory.FullName;
@@ -371,7 +374,8 @@ namespace DynamoInventor
 
         public static string GetGeometryFactoryPath(string corePath)
         {
-            var dynamoAsmPath = System.IO.Path.Combine(corePath, "DynamoShapeManager.dll");
+            var dynamoAsmPath = @"C:\Program Files\Dynamo\Dynamo Core\1.3\DynamoShapeManager.dll";
+            //var dynamoAsmPath = System.IO.Path.Combine(corePath, "DynamoShapeManager.dll");
             var assembly = Assembly.LoadFrom(dynamoAsmPath);
             if (assembly == null)
                 throw new FileNotFoundException("File not found", dynamoAsmPath);
