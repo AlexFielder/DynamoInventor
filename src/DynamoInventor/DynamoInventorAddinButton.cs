@@ -1,31 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Interop;
 using Inventor;
 
 using Dynamo.Controls;
-using Dynamo.Core;
-using Dynamo.Core.Threading;
-using Dynamo.Models;
-using Dynamo.Services;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using DynamoUnits;
-
-using DynamoUtilities;
 using InventorServices.Persistence;
 using DynamoInventor.Models;
-using DynamoInventor;
-using System.IO;
 
 namespace DynamoInventor
 {

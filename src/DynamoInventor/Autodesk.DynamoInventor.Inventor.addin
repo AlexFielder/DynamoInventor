@@ -5,11 +5,11 @@
   <DisplayName>DynamoInventor</DisplayName>
   <Description>DynamoInventor</Description>
   <!--<Assembly>DynamoInventor\DynamoInventor.dll</Assembly>-->
-  <Assembly>C:\Program Files\Dynamo 0.9\Inventor_2016\DynamoInventor.dll</Assembly>
+  <Assembly>C:\ProgramData\Autodesk\Inventor Addins\Dynamo Inventor\2018\DynamoInventor.dll</Assembly>
   <LoadOnStartUp>1</LoadOnStartUp>
   <UserUnloadable>1</UserUnloadable>
   <Hidden>0</Hidden>
-  <SupportedSoftwareVersionGreaterThan>17..</SupportedSoftwareVersionGreaterThan>
+  <SupportedSoftwareVersionGreaterThan>20..</SupportedSoftwareVersionGreaterThan>
   <DataVersion>1</DataVersion>
   <UserInterfaceVersion>1</UserInterfaceVersion>
   <VendorId>TheInternet</VendorId>

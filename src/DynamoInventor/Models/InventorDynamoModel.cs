@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
-
-using Dynamo;
-using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Watch3D;
-using Dynamo.Services;
-using Dynamo.Core.Threading;
 using Dynamo.Extensions;
-using Dynamo.UpdateManager;
 using Greg;
+using Dynamo.Scheduler;
+using Dynamo.Updates;
+using System;
+using Dynamo.Configuration;
 
 namespace DynamoInventor.Models
 {
@@ -36,6 +28,19 @@ namespace DynamoInventor.Models
 
             public string DynamoCorePath { get; set; }
 
+            public string DynamoHostPath
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             public IEnumerable<IExtension> Extensions { get; set; }
             
             public string GeometryFactoryPath { get; set; }
@@ -51,6 +56,45 @@ namespace DynamoInventor.Models
             public bool StartInTestMode { get; set; }
 
             public IUpdateManager UpdateManager { get; set; }
+
+            TaskProcessMode IStartConfiguration.ProcessMode
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            ISchedulerThread IStartConfiguration.SchedulerThread
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            IUpdateManager IStartConfiguration.UpdateManager
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
         }
         public new static InventorDynamoModel Start()
         {
@@ -60,7 +104,7 @@ namespace DynamoInventor.Models
         public new static InventorDynamoModel Start(IStartConfiguration configuration)
         {
             if (string.IsNullOrEmpty(configuration.Context))
-                configuration.Context = Dynamo.Core.Context.REVIT_2015;
+                configuration.Context = Dynamo.Configuration.Context.NONE;
             if (string.IsNullOrEmpty(configuration.DynamoCorePath))
             {
                 var asmLocation = Assembly.GetExecutingAssembly().Location;

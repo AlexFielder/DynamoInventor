@@ -91,25 +91,25 @@
       <HintPath>$(INVENTORAPI)\Autodesk.Inventor.interop.dll</HintPath>
     </Reference>
     <Reference Include="DynamoCore">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCore.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\DynamoCore.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="DynamoCoreWpf">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoCoreWpf.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\DynamoCoreWpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DynamoUnits, Version=0.7.6.3426, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUnits.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\DynamoUnits.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DynamoUtilities, Version=0.7.6.3426, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\DynamoUtilities.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\DynamoUtilities.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Greg">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\Greg.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\Greg.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="InventorLibrary">
@@ -119,7 +119,7 @@
       <HintPath>..\Libraries\Inventor\DSInventorNodes\bin\debug\InventorServices.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\Microsoft.Practices.Prism.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -131,15 +131,11 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoCore, Version=0.7.6.3495, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\ProtoCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ProtoGeometry">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoGeometry.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Dynamo 0.9\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
@@ -226,10 +222,10 @@
     </PreBuildEvent>
     <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32"			
 mt.exe -manifest "$(ProjectDir)DynamoInventor.X.manifest" -outputresource:"$(TargetPath)";#2
-del /q "C:\Program Files\Dynamo 0.9\Inventor_2016\*.*";
-del /q "C:\Program Files\Dynamo 0.9\Inventor_2016\";
-mkdir "C:\Program Files\Dynamo 0.9\Inventor_2016\";
-XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25AppData%25\Autodesk\Inventor 2016\Addins\" /Y /R   
-XCopy "$(TargetDir)*" "C:\Program Files\Dynamo 0.9\Inventor_2016\" /Y /R /I /S</PostBuildEvent>
+del /q "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2018\*.*";
+del /q "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2018\";
+mkdir "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2018\";
+XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25ProgramData%25\Autodesk\Inventor Addins\" /Y /R   
+XCopy "$(TargetDir)*" "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2018\" /Y /R /I /S</PostBuildEvent>
   </PropertyGroup>
 </Project>
