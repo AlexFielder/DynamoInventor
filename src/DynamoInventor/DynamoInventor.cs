@@ -409,7 +409,8 @@ namespace DynamoInventor
 
             try
             {
-                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                var assemblyLocation = @"C:\Program Files\Dynamo\Dynamo Core\1.3\DynamoShapeManager.dll";
+                //var assemblyLocation = Assembly.GetExecutingAssembly().Location;
                 var assemblyDirectory = System.IO.Path.GetDirectoryName(assemblyLocation);
 
                 // Try "Dynamo 0.x\Revit_20xx" folder first...
