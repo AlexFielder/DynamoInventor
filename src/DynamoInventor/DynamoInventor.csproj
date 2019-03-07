@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
   </ImportGroup>
@@ -30,7 +30,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -138,9 +138,8 @@
       <HintPath>..\..\..\..\..\..\..\Program Files\Dynamo\Dynamo Core\1.3\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimpleInjector.3.1.2\lib\net45\SimpleInjector.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SimpleInjector, Version=4.0.12.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.4.0.12\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -179,6 +178,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="DynamoInventor.X.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -222,10 +222,10 @@
     </PreBuildEvent>
     <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32"			
 mt.exe -manifest "$(ProjectDir)DynamoInventor.X.manifest" -outputresource:"$(TargetPath)";#2
-del /q "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2018\*.*";
-del /q "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2018\";
-mkdir "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2018\";
+del /q "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2019\*.*";
+del /q "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2019\";
+mkdir "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2019\";
 XCopy "$(ProjectDir)Autodesk.DynamoInventor.Inventor.addin" "%25ProgramData%25\Autodesk\Inventor Addins\" /Y /R   
-XCopy "$(TargetDir)*" "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2018\" /Y /R /I /S</PostBuildEvent>
+XCopy "$(TargetDir)*" "%25ProgramData%25\Autodesk\Inventor Addins\Dynamo Inventor\2019\" /Y /R /I /S</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -5,7 +5,7 @@
   <DisplayName>DynamoInventor</DisplayName>
   <Description>DynamoInventor</Description>
   <!--<Assembly>DynamoInventor\DynamoInventor.dll</Assembly>-->
-  <Assembly>C:\ProgramData\Autodesk\Inventor Addins\Dynamo Inventor\2018\DynamoInventor.dll</Assembly>
+  <Assembly>C:\ProgramData\Autodesk\Inventor Addins\Dynamo Inventor\2019\DynamoInventor.dll</Assembly>
   <LoadOnStartUp>1</LoadOnStartUp>
   <UserUnloadable>1</UserUnloadable>
   <Hidden>0</Hidden>

@@ -34,8 +34,8 @@ namespace DynamoInventor
         private RibbonPanel partRibbonPanel;
         private RibbonPanel drawingRibbonPanel;
 
-        //public IPathManager DynamoPathManager { get { return pathManager; } }
-        //private readonly IPathManager pathManager;
+        public static IPathManager DynamoPathManager { get { return pathManager; } }
+        private static readonly IPathManager pathManager;
 
         private string commandBarInternalName = "Dynamo:InventorDynamo:DynamoCommandBar";
         private string commandBarDisplayName = "Dynamo";
@@ -59,14 +59,14 @@ namespace DynamoInventor
 
         #region Public constructors
 
-        //public DynamoInventor()
-        //{
-        //    Debugger.Break();
-        //    Assembly.LoadFrom(@"C:\Program Files\Dynamo 0.9\DynamoCore.dll");
-        //    // Even though this method has no dependencies on DynamoCore, resolution of DynamoCore is
-        //    // failing prior to the handler to AssemblyResolve event getting registered.
-        //    SubscribeAssemblyResolvingEvent();
-        //}
+        public DynamoInventor()
+        {
+            //Debugger.Break();
+            //Assembly.LoadFrom(@"C:\Program Files\Dynamo 0.9\DynamoCore.dll");
+            // Even though this method has no dependencies on DynamoCore, resolution of DynamoCore is
+            // failing prior to the handler to AssemblyResolve event getting registered.
+            SubscribeAssemblyResolvingEvent();
+        }
 
         #endregion Public constructors
 
@@ -74,6 +74,7 @@ namespace DynamoInventor
 
         public void Activate(Inventor.ApplicationAddInSite addInSiteObject, bool firstTime)
         {
+
             Debugger.Break();
             SubscribeAssemblyResolvingEvent();
             //currentDomain.AssemblyResolve += new ResolveEventHandler(MyResolveEventHandler);
@@ -333,8 +334,10 @@ namespace DynamoInventor
             assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
             // Add the Inventor_20xx folder for assembly resolution
+            //PathManager.Instance.AddResolutionPath(assDir);
             //DynamoPathManager.Instance.AddResolutionPath(assDir);
-            //DynamoPathManager.AddResolutionPath(assDir);
+            //Dynamo
+            DynamoPathManager.AddResolutionPath(assDir);
 
             // Setup the core paths
             // TODO currently DynamoInventor's output path is set to the same one as DynamoCore.
@@ -347,6 +350,7 @@ namespace DynamoInventor
             //DynamoPathManager.Instance.InitializeCore(@"C:\Program Files\Dynamo 0.9");
 
             // Add Revit-specific paths for loading.
+
             ///DynamoPathManager.Instance.AddPreloadLibrary(System.IO.Path.Combine(assDir, "Inventor_2015\\InventorLibrary.dll"));
 
             // TODO: Fix this for versioning

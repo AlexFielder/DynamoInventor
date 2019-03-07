@@ -65,3 +65,8 @@ Dynamo.sln.DotSettings
 extern/DynamoAsm/
 extern/ASM/
 
+*.dat
+*.lock
+*.ide
+*.ide-shm
+*.ide-wal
