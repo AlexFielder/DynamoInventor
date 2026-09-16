@@ -49,7 +49,7 @@ namespace InventorServices.Persistence
             {
                 //TODO: This is not good.  The convention in the DynamoInventor is that if we don't have an active
                 //part document, we set this to null.  This is just for RTC demo.  Change this back.
-                if (partDoc == null && ActiveDocument.DocumentType == DocumentTypeEnum.kPartDocumentObject)
+                if (partDoc == null && ActiveDocument != null && ActiveDocument.DocumentType == DocumentTypeEnum.kPartDocumentObject)
                 {
                     partDoc = (PartDocument)ActiveDocument;
                 }
@@ -61,6 +61,45 @@ namespace InventorServices.Persistence
         public Inventor.Document ActiveDocument
         {
             get { return InventorApplication.ActiveDocument; }
+        }
+
+        /// <summary>
+        /// Part or assembly component definition of the active document. Nodes that create geometry go
+        /// through this rather than ActiveAssemblyDoc/ActivePartDoc so they work in both document types.
+        /// Assemblies only accept fixed work points/planes; parts accept every definition type.
+        /// </summary>
+        public Inventor.ComponentDefinition ActiveComponentDefinition
+        {
+            get
+            {
+                var doc = ActiveDocument;
+                if (doc == null)
+                {
+                    // Nothing open: keep the historical behaviour and start an assembly.
+                    doc = InventorApplication.Documents.Add(DocumentTypeEnum.kAssemblyDocumentObject);
+                }
+
+                switch (doc.DocumentType)
+                {
+                    case DocumentTypeEnum.kPartDocumentObject:
+                        return (ComponentDefinition)((PartDocument)doc).ComponentDefinition;
+                    case DocumentTypeEnum.kAssemblyDocumentObject:
+                        return (ComponentDefinition)((AssemblyDocument)doc).ComponentDefinition;
+                    default:
+                        throw new InvalidOperationException(
+                            "The active Inventor document is a " + doc.DocumentType + "; open a part or an assembly.");
+                }
+            }
+        }
+
+        public Inventor.ReferenceKeyManager ActiveReferenceKeyManager
+        {
+            get
+            {
+                // Resolve the component definition first so the no-document case creates the assembly.
+                var definition = ActiveComponentDefinition;
+                return ((Document)definition.Document).ReferenceKeyManager;
+            }
         }
 
         public Inventor.Application InventorApplication

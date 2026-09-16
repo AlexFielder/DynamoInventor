@@ -47,6 +47,43 @@ Smoke test without touching the UI (Inventor running or not; it will be started 
 
     bin\Debug\DynamoInventor.App.exe --smoke-test "InventorWorkPoint.ByPoint(Point.ByCoordinates(1,2,3));"
 
+Add `--then "<code>"` to rewrite the code block after the first run and exercise the update-in-place
+path, or `--open <file.dyn>` to open a saved graph and log its first run.
+
+Nodes
+-----
+
+Hand-written nodes work in the active **part or assembly** (a new assembly is created when nothing is
+open; drawings and presentations are rejected with a clear error). A Dynamo unit is an Inventor
+centimetre. Each geometry node is trace-bound: re-running the same node moves the object it made
+rather than creating another.
+
+| Node | What it does |
+|---|---|
+| `InventorWorkPoint.ByPoint(point)` | Fixed work point (assemblies only allow fixed work points; parts allow all kinds). |
+| `InventorWorkPlane.ByPlane(plane)` / `.ByOriginXAxisYAxis(origin, x, y)` | Fixed work plane. |
+| `InventorParameter.Names()` / `.UserParameterNames()` | Parameter names of the active document. |
+| `InventorParameter.Value(name)` / `.Expression(name)` / `.Units(name)` | Read a parameter (value in its own units). |
+| `InventorParameter.SetValue(name, value)` / `.SetExpression(name, expr)` | Drive a parameter and update the document. |
+| `InventorParameter.AddUserParameter(name, value, units)` | Add (or set) a user parameter. |
+
+The `InventorLibrary.API.Inv*` classes are generated wrappers over the interop (hidden from the
+library, usable from code blocks). Everything is reachable over COM from the out-of-process host.
+
+Wrapper generator
+-----------------
+
+`src\DynamoInventor.Generator` replaces the old IronPython 2.7 NodeGeneration project. It reflects
+over the installed `Autodesk.Inventor.Interop.dll` and rewrites every `Inv*.cs` in
+`src\Libraries\Inventor\DSInventorNodes\API` from the type list in `API\wrappers.json`:
+
+    dotnet run --project src\DynamoInventor.Generator -- --config src\Libraries\Inventor\DSInventorNodes\API\wrappers.json
+
+Members whose types are not in the list are emitted as `// skipped:` comments rather than as raw
+interop types, so the output always compiles and never leaks `Inventor.*` names into DesignScript;
+widen the list to expose more. Hand additions belong in `Inv<Name>.Custom.cs` partials, never in
+generated files.
+
 Logs: `%LOCALAPPDATA%\DynamoInventor\DynamoInventor.log` (add-in) and `DynamoInventor.App.log` (host);
 Dynamo's own log under `%APPDATA%\Dynamo\Dynamo Inventor\4.2\Logs`.
 
@@ -59,4 +96,4 @@ Known issues
 - Three files in `InventorLibrary` were never part of the build and stay excluded until reviewed
   (`API\InvOGSSceneNode.cs`, `InvWorkPoint.cs`, `ModulePlacement\DSAssemblyComponent.cs`).
 - Units: conversions are raw centimetres (the Inventor API's internal unit); Dynamo 4 has no host-unit setting.
-- The node generator under `src/DynamoInventor/NodeGeneration` is a Python 2-era project and has not been touched.
+- The ModulePlacement nodes predate the part/assembly rework and still assume an assembly.

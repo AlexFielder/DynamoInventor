@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Wrapper generator: reflects over the installed Autodesk.Inventor.Interop.dll and emits the
+    InventorLibrary.API.Inv* wrapper classes. Replaces the IronPython 2.7 NodeGeneration project.
+
+      dotnet run - -config <wrappers.json> [- -interop <dll>] [- -out <dir>] [- -dry-run]
+    (two dashes; written spaced here only because of the XML comment)
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>DynamoInventor.Generator</RootNamespace>
+    <AssemblyName>DynamoInventor.Generator</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Tool, not a deliverable: keep its output out of the shared bin folder. -->
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <UseWPF>false</UseWPF>
+  </PropertyGroup>
+
+</Project>
