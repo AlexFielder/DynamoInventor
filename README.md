@@ -48,7 +48,21 @@ Smoke test without touching the UI (Inventor running or not; it will be started 
     bin\Debug\DynamoInventor.App.exe --smoke-test "InventorWorkPoint.ByPoint(Point.ByCoordinates(1,2,3));"
 
 Add `--then "<code>"` to rewrite the code block after the first run and exercise the update-in-place
-path, or `--open <file.dyn>` to open a saved graph and log its first run.
+path, or `--open <file.dyn>` to open a saved graph and log its first run (Manual-mode graphs are run).
+
+Two things make a graph look like it is doing nothing: a graph saved in **Manual** run mode waits for
+Run, and Dynamo asks you to **trust the folder** a graph is opened from before its first run (a modal
+dialog in the Dynamo window; tick the folder to stop it asking). `--open` trusts the folder itself.
+`--no-network` starts Dynamo without its online services (sign-in, notifications, Autodesk Assistant, MCP).
+
+Samples
+-------
+
+`samples\Vase\DynamoInventor-Vase.dyn` builds a parametric surface-loft vase in the active **part**
+through `InventorVase.ByCircles` (`src\Libraries\Inventor\DSInventorNodes\Features`): four offset
+work planes, four sketched circles driven by user parameters, one loft tagged with attributes so
+re-running the graph updates the existing vase. `DynamoInventor-Vase-Preview.dyn` is the same
+geometry without the Inventor output.
 
 Nodes
 -----
