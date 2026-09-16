@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    ASM spike for Inventor 2027 + Dynamo Core 4.2.1 (2026-09-16).
+    Question under test: can Dynamo's geometry stack (libG 232 + ASM 232 from
+    an installed Autodesk product) be preloaded inside Inventor.exe, which has
+    its own ASM linked into RxAsm.dll, and can both kernels then do work?
+
+    Not part of the DynamoInventor solution. Built and deployed by deploy.ps1.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AsmSpike</RootNamespace>
+    <AssemblyName>AsmSpike</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- Inventor CoCreateInstances the add-in class; it must be COM-visible or Activate() is never called. -->
+    <ComVisible>true</ComVisible>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+
+    <DynamoRuntime Condition="'$(DynamoRuntime)' == ''">C:\AFAutomations\Tools\DynamoCoreRuntime\4.2.1</DynamoRuntime>
+    <InventorInteropPath Condition="'$(InventorInteropPath)' == ''">C:\Program Files\Autodesk\Inventor 2027\Bin\Public Assemblies\Autodesk.Inventor.Interop.dll</InventorInteropPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AsmSpikeAddIn.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Inventor.Interop">
+      <HintPath>$(InventorInteropPath)</HintPath>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Dynamo assemblies are resolved at runtime from $(DynamoRuntime); never copy them next to the add-in. -->
+  <ItemGroup>
+    <Reference Include="DynamoApplications">
+      <HintPath>$(DynamoRuntime)\DynamoApplications.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DynamoCore">
+      <HintPath>$(DynamoRuntime)\DynamoCore.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DynamoServices">
+      <HintPath>$(DynamoRuntime)\DynamoServices.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DynamoShapeManager">
+      <HintPath>$(DynamoRuntime)\DynamoShapeManager.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ProtoGeometry">
+      <HintPath>$(DynamoRuntime)\ProtoGeometry.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
