@@ -12,13 +12,14 @@ param(
     [switch]$Remove,
     [switch]$NoBuild,
     [string]$Configuration = 'Debug',
-    [string]$InventorVersion = '2027'
+    [string]$InventorVersion = '2027',
+    [string]$DynamoRuntime = 'C:\AFAutomations\Tools\DynamoCoreRuntime\4.2.1'
 )
 
 $ErrorActionPreference = 'Stop'
 $repo     = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-$proj     = Join-Path $repo 'src\DynamoInventor\DynamoInventor.csproj'
-$dll      = Join-Path $repo "src\DynamoInventor\bin\$Configuration\DynamoInventor.dll"
+$sln      = Join-Path $repo 'src\DynamoInventor.slnx'
+$dll      = Join-Path $repo "bin\$Configuration\DynamoInventor.dll"
 $addinDir = Join-Path $env:APPDATA "Autodesk\Inventor $InventorVersion\Addins"
 $addinXml = Join-Path $addinDir 'Autodesk.DynamoInventor.Inventor.dev.addin'
 
@@ -28,10 +29,16 @@ if ($Remove) {
 }
 
 if (-not $NoBuild) {
-    dotnet build $proj -c $Configuration -nologo -v minimal
+    dotnet build $sln -c $Configuration -nologo -v minimal
     if ($LASTEXITCODE -ne 0) { throw "build failed" }
 }
 if (-not (Test-Path $dll)) { throw "built dll not found at $dll" }
+
+# Tell DynamoInventor.App where the Dynamo runtime is (dev machines: the extracted DynamoCoreRuntime zip).
+if ($DynamoRuntime) {
+    Set-Content -Path (Join-Path (Split-Path $dll) 'dynamo-runtime.txt') -Value $DynamoRuntime -Encoding ASCII -NoNewline
+    "runtime pointer -> $DynamoRuntime"
+}
 
 # Take the shipped manifest and swap the relative Assembly path for the absolute dev path.
 $template = Get-Content (Join-Path $repo 'src\DynamoInventor\Autodesk.DynamoInventor.Inventor.addin') -Raw

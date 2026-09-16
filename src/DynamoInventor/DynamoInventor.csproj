@@ -1,23 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    The Inventor add-in (ApplicationAddInServer) that hosts Dynamo in-process.
+    The Inventor add-in (ApplicationAddInServer): a ribbon button that launches DynamoInventor.App.exe.
 
-    Loading model (proved by spike\AsmSpike on 2026-09-16):
-      - Inventor loads the add-in into the Default AssemblyLoadContext (UseInventorAssemblyContext=1).
-      - Dynamo assemblies are NOT shipped next to this DLL; a Resolving handler probes the
-        DynamoCoreRuntime folder ($(DynamoRuntimeRoot)) at runtime.
-      - ASM comes from Inventor itself (Autodesk Shared Components); Dynamo's libG binds to it.
+    This assembly deliberately has NO Dynamo dependency. Two reasons, both verified 2026-09-16:
+      - Inventor's add-in loader reflects over every type here before Activate() runs, so any type
+        deriving from a not-yet-resolvable assembly stops the add-in loading at all.
+      - Dynamo cannot run inside Inventor 2027's process anyway: Inventor pins WebView2 SDK 1.0.1210
+        in the default AssemblyLoadContext and Dynamo 4.2 needs 1.0.2478.
   -->
 
   <PropertyGroup>
     <RootNamespace>DynamoInventor</RootNamespace>
     <AssemblyName>DynamoInventor</AssemblyName>
-    <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <!-- Inventor CoCreateInstances the add-in class; without COM visibility Activate() is never called. -->
     <ComVisible>true</ComVisible>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
 
@@ -32,18 +30,6 @@
       <EmbedInteropTypes>false</EmbedInteropTypes>
       <Private>false</Private>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- WpfUILibrary brings DynamoCoreWpf + Core (DynamoCore, DynamoApplications, DynamoShapeManager, ...). -->
-    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" ExcludeAssets="runtime" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Dynamo-derived types live in Host; see the note in that project. -->
-    <ProjectReference Include="..\DynamoInventor.Host\DynamoInventor.Host.csproj" />
-    <ProjectReference Include="..\Libraries\Inventor\DSInventorNodes\InventorLibrary.csproj" />
-    <ProjectReference Include="..\Libraries\Inventor\InventorServices\InventorServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>

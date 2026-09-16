@@ -1,16 +1,16 @@
 using System;
 using System.Drawing;
 using Inventor;
-using InventorServices.Persistence;
 
 namespace DynamoInventor
 {
     /// <summary>
-    /// Ribbon button that opens (or brings forward) the Dynamo window.
+    /// Ribbon button that opens (or brings forward) the out-of-process Dynamo host.
     /// </summary>
     internal class DynamoInventorAddinButton : Button
     {
-        public DynamoInventorAddinButton(string displayName,
+        public DynamoInventorAddinButton(Inventor.Application inventorApplication,
+                                         string displayName,
                                          string internalName,
                                          CommandTypesEnum commandType,
                                          string clientId,
@@ -19,7 +19,7 @@ namespace DynamoInventor
                                          Icon standardIcon,
                                          Icon largeIcon,
                                          ButtonDisplayEnum buttonDisplayType)
-            : base(displayName, internalName, commandType, clientId, description, tooltip, standardIcon, largeIcon, buttonDisplayType)
+            : base(inventorApplication, displayName, internalName, commandType, clientId, description, tooltip, standardIcon, largeIcon, buttonDisplayType)
         {
         }
 
@@ -27,13 +27,13 @@ namespace DynamoInventor
         {
             try
             {
-                DynamoSession.Open(PersistenceManager.InventorApplication);
+                DynamoAppLauncher.OpenOrFocus(InventorApplication);
             }
             catch (Exception e)
             {
-                DynamoRuntime.Log("Failed to open Dynamo: " + e);
+                AddinLog.Log("Failed to open Dynamo: " + e);
                 System.Windows.Forms.MessageBox.Show(
-                    e.Message + System.Environment.NewLine + System.Environment.NewLine + "Details: " + DynamoRuntime.LogPath,
+                    e.Message + System.Environment.NewLine + System.Environment.NewLine + "Details: " + AddinLog.LogPath,
                     "Dynamo for Inventor",
                     System.Windows.Forms.MessageBoxButtons.OK,
                     System.Windows.Forms.MessageBoxIcon.Error);

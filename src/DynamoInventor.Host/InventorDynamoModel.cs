@@ -20,9 +20,11 @@ namespace DynamoInventor.Host
         /// <param name="geometryFactoryPath">Full path to LibG.ProtoInterface.dll for the ASM build Inventor has loaded.</param>
         /// <param name="preloaderLocation">The libg_xxx folder that geometryFactoryPath lives in.</param>
         /// <param name="hostVersion">Inventor's display version, e.g. "2027.1", for analytics and the title bar.</param>
-        /// <param name="userDataFolder">Optional override for Dynamo's per-user data folder; null keeps Dynamo's default.</param>
+        /// <param name="userDataFolder">Root for Dynamo's per-user data (Dynamo appends the major.minor folder); null keeps Dynamo's default.</param>
+        /// <param name="commonDataFolder">Root for Dynamo's all-users data; null keeps Dynamo's default.</param>
         public static DefaultStartConfiguration CreateConfiguration(
-            string geometryFactoryPath, string preloaderLocation, string hostVersion, string userDataFolder = null)
+            string geometryFactoryPath, string preloaderLocation, string hostVersion,
+            string userDataFolder = null, string commonDataFolder = null)
         {
             if (string.IsNullOrEmpty(geometryFactoryPath) || !File.Exists(geometryFactoryPath))
             {
@@ -31,11 +33,15 @@ namespace DynamoInventor.Host
 
             return new DefaultStartConfiguration
             {
+                // Only the static DynamoModel.Start(config) defaults Context; we construct the model
+                // directly, and a null Context makes NodeModelAssemblyLoader throw NullReferenceException
+                // for every core node type (all 70 of them silently missing from the library).
+                Context = Dynamo.Configuration.Context.NONE,
                 GeometryFactoryPath = geometryFactoryPath,
                 ProcessMode = TaskProcessMode.Asynchronous,
                 StartInTestMode = false,
                 // Preferences left null: DynamoModel loads or creates the per-host preferences file itself.
-                PathResolver = new InventorPathResolver(preloaderLocation, userDataFolder),
+                PathResolver = new InventorPathResolver(preloaderLocation, userDataFolder, commonDataFolder),
                 HostAnalyticsInfo = new HostAnalyticsInfo
                 {
                     HostName = "Dynamo Inventor",

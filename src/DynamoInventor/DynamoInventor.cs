@@ -3,13 +3,13 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using DynamoInventor.Properties;
 using Inventor;
-using InventorServices.Persistence;
 
 namespace DynamoInventor
 {
     /// <summary>
     /// The Inventor add-in entry point (ApplicationAddInServer). Registers the Dynamo ribbon button;
-    /// Dynamo itself is only loaded when the button is first pressed (see <see cref="DynamoSession"/>).
+    /// Dynamo runs out of process in DynamoInventor.App.exe (see <see cref="DynamoAppLauncher"/>),
+    /// so this assembly must never reference a Dynamo type.
     /// </summary>
     [ComVisible(true)]
     [Guid("476f38a1-75f3-450b-a75a-6f030bf012a9")]
@@ -35,17 +35,17 @@ namespace DynamoInventor
             try
             {
                 inventorApplication = addInSiteObject.Application;
-                PersistenceManager.InventorApplication = inventorApplication;
                 userInterfaceManager = inventorApplication.UserInterfaceManager;
 
-                DynamoRuntime.Log("Activate: Inventor " + inventorApplication.SoftwareVersion.DisplayVersion +
-                                  " build " + inventorApplication.SoftwareVersion.BuildIdentifier);
+                AddinLog.Log("Activate: Inventor " + inventorApplication.SoftwareVersion.DisplayVersion +
+                             " build " + inventorApplication.SoftwareVersion.BuildIdentifier);
 
                 var clsid = (GuidAttribute)System.Attribute.GetCustomAttribute(GetType(), typeof(GuidAttribute));
                 addInClsid = "{" + clsid.Value + "}";
 
                 Icon dynamoIcon = Resources.logo_square_32x32;
                 dynamoAddinButton = new DynamoInventorAddinButton(
+                    inventorApplication,
                     ButtonDisplayName, ButtonInternalName, CommandTypesEnum.kShapeEditCmdType,
                     addInClsid, "Open Dynamo.",
                     "Dynamo is a visual programming environment for Inventor.",
@@ -65,22 +65,14 @@ namespace DynamoInventor
             }
             catch (Exception e)
             {
-                DynamoRuntime.Log("Activate failed: " + e);
+                AddinLog.Log("Activate failed: " + e);
                 System.Windows.Forms.MessageBox.Show(e.ToString(), "Dynamo for Inventor");
             }
         }
 
         public void Deactivate()
         {
-            try
-            {
-                DynamoSession.Close();
-            }
-            catch (Exception e)
-            {
-                DynamoRuntime.Log("Deactivate: " + e);
-            }
-
+            // The Dynamo process is left running on purpose: closing Inventor should not lose an open graph.
             if (userInterfaceEvents != null)
             {
                 userInterfaceEvents.OnResetRibbonInterface -= UserInterfaceEvents_OnResetRibbonInterface;
@@ -88,7 +80,6 @@ namespace DynamoInventor
             }
             dynamoAddinButton = null;
             userInterfaceManager = null;
-            PersistenceManager.InventorApplication = null;
             inventorApplication = null;
 
             GC.Collect();
@@ -109,7 +100,7 @@ namespace DynamoInventor
             }
             catch (Exception e)
             {
-                DynamoRuntime.Log("OnResetRibbonInterface: " + e);
+                AddinLog.Log("OnResetRibbonInterface: " + e);
             }
         }
 
@@ -129,7 +120,7 @@ namespace DynamoInventor
                 catch (Exception e)
                 {
                     // Not every ribbon has an Add-Ins tab in every Inventor configuration; keep going.
-                    DynamoRuntime.Log("Ribbon '" + ribbonName + "': " + e.Message);
+                    AddinLog.Log("Ribbon '" + ribbonName + "': " + e.Message);
                 }
             }
         }

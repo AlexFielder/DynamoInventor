@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Out-of-process Dynamo host for Inventor.
+
+    Why a separate process: Inventor 2027 loads WebView2 SDK 1.0.1210 into its default
+    AssemblyLoadContext at startup while Dynamo 4.2 is built against 1.0.2478, and Dynamo's own
+    Assembly.LoadFrom calls pin everything to that context, so an in-process Dynamo window dies in
+    its crash reporter (verified 2026-09-16). In its own process Dynamo gets exactly the
+    dependencies it shipped with. The Inventor nodes reach Inventor over COM
+    (InventorServices.Persistence.PersistenceManager -> Inventor.Application in the ROT).
+
+    Dynamo assemblies are compile-time references only; at runtime DynamoRuntime resolves them
+    from the DynamoCoreRuntime folder.
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>DynamoInventor.App</RootNamespace>
+    <AssemblyName>DynamoInventor.App</AssemblyName>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>..\DynamoInventor\Resources\logo_square_32x32.ico</ApplicationIcon>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- Dynamo needs the full desktop runtime; roll forward so any 10.x patch level works. -->
+    <RollForward>LatestPatch</RollForward>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Unlike the add-in, this process does not run inside Inventor, so the interop assemblies must be
+      shipped beside the exe (Private=true). InventorLibrary cannot be imported into the DesignScript
+      compiler without them, which leaves the VM with no executable and kills the model on start.
+    -->
+    <Reference Include="Autodesk.Inventor.Interop">
+      <HintPath>$(InventorInteropPath)</HintPath>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="stdole">
+      <HintPath>$(StdOlePath)</HintPath>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" ExcludeAssets="runtime" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DynamoInventor.Host\DynamoInventor.Host.csproj" />
+    <!-- Not used at compile time; referenced so the node library and its services land in the output folder. -->
+    <ProjectReference Include="..\Libraries\Inventor\DSInventorNodes\InventorLibrary.csproj" />
+    <ProjectReference Include="..\Libraries\Inventor\InventorServices\InventorServices.csproj" />
+  </ItemGroup>
+
+</Project>

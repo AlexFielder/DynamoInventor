@@ -25,6 +25,27 @@ namespace DynamoInventor.Host
             {
                 additionalResolutionPaths.Add(preloaderLocation);
             }
+            // Dynamo does NOT merge this list with a built-in one: whatever the resolver returns IS the set
+            // of libraries the DesignScript VM starts with. Omitting the core set leaves the VM with no
+            // executable ("Assertion failed: 'exe != null'" in LiveRunner). Same list as Dynamo's own
+            // SandboxPathResolver; bare names resolve against the Dynamo runtime folder.
+            preloadedLibraryPaths.AddRange(new[]
+            {
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DesignScriptBuiltin.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSCPython.dll",
+                "FunctionObject.ds",
+                "BuiltIn.ds",
+                "DynamoConversions.dll",
+                "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll",
+                "GeometryColor.dll"
+            });
+
             if (!string.IsNullOrEmpty(addinFolder))
             {
                 additionalResolutionPaths.Add(addinFolder);
