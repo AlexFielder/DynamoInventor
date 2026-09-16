@@ -71,7 +71,7 @@ namespace InventorServices.Persistence
                 {
                     try
                     {
-                        invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
+                        invApp = (Inventor.Application)InventorServices.Utilities.ComInterop.GetActiveObject("Inventor.Application");
                     }
                     catch
                     {

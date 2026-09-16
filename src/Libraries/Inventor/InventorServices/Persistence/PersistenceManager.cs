@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using SimpleInjector;
-using SimpleInjector.Extensions;
 using Container = SimpleInjector.Container;
 using Inventor;
 
@@ -78,7 +77,7 @@ namespace InventorServices.Persistence
                 {
                     try
                     {
-                        invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
+                        invApp = (Inventor.Application)InventorServices.Utilities.ComInterop.GetActiveObject("Inventor.Application");
                     }
                     catch
                     {

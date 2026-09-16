@@ -1,64 +1,42 @@
-﻿using Inventor;
-using InventorServices.Persistence;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Inventor;
 
 namespace DynamoInventor
 {
+    /// <summary>Base class for a ribbon button definition with an OnExecute handler.</summary>
     internal abstract class Button
     {
-        #region Private fields
+        private readonly ButtonDefinition buttonDefinition;
+        private readonly ButtonDefinitionSink_OnExecuteEventHandler onExecute;
 
-        private ButtonDefinition buttonDefinition;
+        public ButtonDefinition ButtonDefinition => buttonDefinition;
 
-        private ButtonDefinitionSink_OnExecuteEventHandler ButtonDefinition_OnExecuteEventDelegate;
+        protected Inventor.Application InventorApplication { get; }
 
-        #endregion Private fields
-
-        #region Public properties
-
-        public Inventor.ButtonDefinition ButtonDefinition
+        protected Button(Inventor.Application inventorApplication,
+                         string displayName,
+                         string internalName,
+                         CommandTypesEnum commandType,
+                         string clientId,
+                         string description,
+                         string tooltip,
+                         Icon standardIcon,
+                         Icon largeIcon,
+                         ButtonDisplayEnum buttonDisplayType)
         {
-            get { return buttonDefinition; }
-        }
-
-        #endregion Public properties
-
-        #region Public constructors
-
-        public Button(string displayName,
-                      string internalName,
-                      CommandTypesEnum commandType,
-                      string clientId,
-                      string description,
-                      string tooltip,
-                      Icon standardIcon,
-                      Icon largeIcon,
-                      ButtonDisplayEnum buttonDisplayType)
-        {
+            InventorApplication = inventorApplication;
             try
             {
-                stdole.IPictureDisp standardIconIPictureDisp;
-                standardIconIPictureDisp = PictureDispConverter.ToIPictureDisp(standardIcon);
-                stdole.IPictureDisp largeIconIPictureDisp;
-                largeIconIPictureDisp = PictureDispConverter.ToIPictureDisp(largeIcon);
-                buttonDefinition = PersistenceManager.InventorApplication.CommandManager.ControlDefinitions.AddButtonDefinition(displayName,
-                                                                                                                             internalName,
-                                                                                                                             commandType,
-                                                                                                                             clientId,
-                                                                                                                             description,
-                                                                                                                             tooltip,
-                                                                                                                             standardIconIPictureDisp,
-                                                                                                                             largeIconIPictureDisp,
-                                                                                                                             buttonDisplayType);
+                var standardIconIPictureDisp = PictureDispConverter.ToIPictureDisp(standardIcon);
+                var largeIconIPictureDisp = PictureDispConverter.ToIPictureDisp(largeIcon);
+                buttonDefinition = inventorApplication.CommandManager.ControlDefinitions.AddButtonDefinition(
+                    displayName, internalName, commandType, clientId, description, tooltip,
+                    standardIconIPictureDisp, largeIconIPictureDisp, buttonDisplayType);
 
                 buttonDefinition.Enabled = true;
-                ButtonDefinition_OnExecuteEventDelegate = new ButtonDefinitionSink_OnExecuteEventHandler(ButtonDefinition_OnExecute);
-                buttonDefinition.OnExecute += ButtonDefinition_OnExecuteEventDelegate;
+                onExecute = new ButtonDefinitionSink_OnExecuteEventHandler(ButtonDefinition_OnExecute);
+                buttonDefinition.OnExecute += onExecute;
             }
             catch (Exception e)
             {
@@ -66,38 +44,6 @@ namespace DynamoInventor
             }
         }
 
-        public Button(string displayName,
-                      string internalName,
-                      CommandTypesEnum commandType,
-                      string clientId,
-                      string description,
-                      string tooltip,
-                      ButtonDisplayEnum buttonDisplayType)
-        {
-            try
-            {
-                buttonDefinition = PersistenceManager.InventorApplication.CommandManager.ControlDefinitions.AddButtonDefinition(displayName,
-                                                                                                                             internalName,
-                                                                                                                             commandType,
-                                                                                                                             clientId,
-                                                                                                                             description,
-                                                                                                                             tooltip,
-                                                                                                                             Type.Missing,
-                                                                                                                             Type.Missing,
-                                                                                                                             buttonDisplayType);
-
-                buttonDefinition.Enabled = true;
-                ButtonDefinition_OnExecuteEventDelegate = new ButtonDefinitionSink_OnExecuteEventHandler(ButtonDefinition_OnExecute);
-                buttonDefinition.OnExecute += ButtonDefinition_OnExecuteEventDelegate;
-            }
-            catch (Exception e)
-            {
-                throw new ApplicationException(e.ToString());
-            }
-        }
-
-        abstract protected void ButtonDefinition_OnExecute(NameValueMap context);
-
-        #endregion Public constructors
+        protected abstract void ButtonDefinition_OnExecute(NameValueMap context);
     }
 }

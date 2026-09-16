@@ -17,14 +17,19 @@ using SimpleInjector;
 
 namespace InventorLibrary.WorkGeometry
 {
+    /// <summary>
+    /// An Inventor work point created and re-bound by Dynamo (trace-tracked across re-runs).
+    /// Named to avoid clashing with the generated API wrapper InventorLibrary.API.InvWorkPoint and
+    /// with Inventor's own WorkPoint interop type, both of which DesignScript can see.
+    /// </summary>
     [IsVisibleInDynamoLibrary(true)]
-    public class InvWorkPoint
+    public class InventorWorkPoint
     {
         private Point point;
         private IObjectBinder binder;
 
         [IsVisibleInDynamoLibrary(false)]
-        private InvWorkPoint(Point point, IObjectBinder binder)
+        private InventorWorkPoint(Point point, IObjectBinder binder)
         {
             this.point = point;
             this.binder = binder;
@@ -50,7 +55,7 @@ namespace InventorLibrary.WorkGeometry
             {
                 wp = binder.DocumentManager.ActiveAssemblyDoc.ComponentDefinition.WorkPoints.AddFixed(point.ToPoint(), false);
                 InternalWorkPoint = wp;
-                this.binder.SetObjectForTrace<InvWorkPoint>(this.InternalWorkPoint);
+                this.binder.SetObjectForTrace<InventorWorkPoint>(this.InternalWorkPoint);
             }
         }
 
@@ -68,10 +73,10 @@ namespace InventorLibrary.WorkGeometry
         #endregion
 
         #region Public static constructors
-        public static InvWorkPoint ByPoint(Point point)
+        public static InventorWorkPoint ByPoint(Point point)
         {
             var binder = PersistenceManager.IoC.GetInstance<IObjectBinder>();
-            return new InvWorkPoint(point, binder);
+            return new InventorWorkPoint(point, binder);
         }
         #endregion
 
