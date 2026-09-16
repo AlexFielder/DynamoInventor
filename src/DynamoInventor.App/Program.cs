@@ -157,12 +157,23 @@ namespace DynamoInventor.App
                 }
             };
             // Dynamo asks the user to trust a folder before running a graph from it, with a modal dialog that
-            // stalls an automated run until someone clicks it. Trust the graph's folder up front.
+            // stalls an automated run until someone clicks it. Trust the graph's folder up front. Only
+            // DisableTrustWarnings is public, and that would persist globally into the user's preferences, so
+            // reach the per-folder AddTrustedLocation (internal in 4.2.1) by reflection instead.
             var folder = Path.GetDirectoryName(Path.GetFullPath(path));
             if (model.PreferenceSettings is Dynamo.Configuration.PreferenceSettings prefs && !prefs.IsTrustedLocation(folder))
             {
-                prefs.SetTrustedLocations(prefs.TrustedLocations.Concat(new[] { folder }).ToList());
-                DynamoRuntime.Log("OPEN: added trusted location " + folder);
+                var add = typeof(Dynamo.Configuration.PreferenceSettings).GetMethod("AddTrustedLocation",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+                if (add != null)
+                {
+                    add.Invoke(prefs, new object[] { folder });
+                    DynamoRuntime.Log("OPEN: added trusted location " + folder);
+                }
+                else
+                {
+                    DynamoRuntime.Log("OPEN: could not add trusted location (API changed); expect Dynamo's trust dialog");
+                }
             }
 
             var opened = Stopwatch.StartNew();
