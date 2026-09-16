@@ -45,7 +45,7 @@ Developer setup
 
 Smoke test without touching the UI (Inventor running or not; it will be started if needed):
 
-    bin\Debug\DynamoInventor.App.exe --smoke-test "InventorLibrary.WorkGeometry.InvWorkPoint.ByPoint(Point.ByCoordinates(1,2,3));"
+    bin\Debug\DynamoInventor.App.exe --smoke-test "InventorWorkPoint.ByPoint(Point.ByCoordinates(1,2,3));"
 
 Logs: `%LOCALAPPDATA%\DynamoInventor\DynamoInventor.log` (add-in) and `DynamoInventor.App.log` (host);
 Dynamo's own log under `%APPDATA%\Dynamo\Dynamo Inventor\4.2\Logs`.
@@ -53,9 +53,9 @@ Dynamo's own log under `%APPDATA%\Dynamo\Dynamo Inventor\4.2\Logs`.
 Known issues
 ------------
 
-- `InvWorkPoint` exists twice (`InventorLibrary.API`, the generated wrapper, and
-  `InventorLibrary.WorkGeometry`, the node), so the short name is ambiguous in code blocks; use the
-  fully-qualified name until the API wrapper is renamed or hidden.
+- Naming: hand-written node classes must not reuse a generated wrapper's `Inv*` name or an Inventor
+  interop type name (many wrapper members expose interop types publicly, so DesignScript can see
+  both). `InvWorkPoint` (node) was renamed `InventorWorkPoint` for this reason.
 - Three files in `InventorLibrary` were never part of the build and stay excluded until reviewed
   (`API\InvOGSSceneNode.cs`, `InvWorkPoint.cs`, `ModulePlacement\DSAssemblyComponent.cs`).
 - Units: conversions are raw centimetres (the Inventor API's internal unit); Dynamo 4 has no host-unit setting.

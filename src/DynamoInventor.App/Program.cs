@@ -148,7 +148,7 @@ namespace DynamoInventor.App
         /// <summary>
         /// Drops a code block containing <paramref name="code"/> into the home workspace and logs the
         /// result of the automatic run. Used to exercise the Inventor nodes end to end over COM, e.g.
-        ///   --smoke-test "InvWorkPoint.ByPoint(Point.ByCoordinates(1,2,3));"
+        ///   --smoke-test "InventorWorkPoint.ByPoint(Point.ByCoordinates(1,2,3));"
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void StartSmokeTest(Dynamo.Models.DynamoModel model, string code)
