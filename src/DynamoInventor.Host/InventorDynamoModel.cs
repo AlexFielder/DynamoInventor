@@ -5,7 +5,7 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 
-namespace DynamoInventor.Models
+namespace DynamoInventor.Host
 {
     /// <summary>
     /// Inventor-hosted DynamoModel. Configuration is built on Dynamo's own

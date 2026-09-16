@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Everything that derives from or implements a Dynamo type lives here, NOT in DynamoInventor.dll.
+
+    Inventor's add-in loader reflects over every type in the add-in assembly to find the COM class
+    (Assembly.GetTypes()). That forces base types and interfaces to load, so a type such as
+    "InventorDynamoModel : DynamoModel" in the entry assembly makes the loader demand DynamoCore.dll
+    before Activate() has had a chance to register the runtime resolver, and the add-in never loads.
+    Types in this assembly are only touched from method bodies, i.e. after the resolver exists.
+  -->
+
+  <PropertyGroup>
+    <RootNamespace>DynamoInventor.Host</RootNamespace>
+    <AssemblyName>DynamoInventor.Host</AssemblyName>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" ExcludeAssets="runtime" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

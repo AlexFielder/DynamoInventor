@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using Dynamo.Interfaces;
 
-namespace DynamoInventor.Models
+namespace DynamoInventor.Host
 {
     /// <summary>
     /// Tells Dynamo where the Inventor-specific bits live: the libG preloader folder for assembly

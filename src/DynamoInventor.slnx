@@ -6,5 +6,8 @@
   <Folder Name="/Libraries/Inventor/DSInventorNodes/">
     <Project Path="Libraries/Inventor/DSInventorNodes/InventorLibrary.csproj" />
   </Folder>
+  <Project Path="DynamoInventor.Host/DynamoInventor.Host.csproj">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="DynamoInventor/DynamoInventor.csproj" />
 </Solution>

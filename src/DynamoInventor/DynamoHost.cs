@@ -65,11 +65,15 @@ namespace DynamoInventor
             lock (gate)
             {
                 if (resolverRegistered) return;
-                var root = RootFolder;
+                var probeFolders = new[] { RootFolder, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) };
                 AssemblyLoadContext.Default.Resolving += (ctx, name) =>
                 {
-                    var candidate = Path.Combine(root, name.Name + ".dll");
-                    return File.Exists(candidate) ? ctx.LoadFromAssemblyPath(candidate) : null;
+                    foreach (var folder in probeFolders)
+                    {
+                        var candidate = Path.Combine(folder, name.Name + ".dll");
+                        if (File.Exists(candidate)) return ctx.LoadFromAssemblyPath(candidate);
+                    }
+                    return null;
                 };
                 resolverRegistered = true;
             }
@@ -117,7 +121,7 @@ namespace DynamoInventor
     {
         private static Dynamo.Controls.DynamoView view;
         private static Dynamo.ViewModels.DynamoViewModel viewModel;
-        private static Models.InventorDynamoModel model;
+        private static Host.InventorDynamoModel model;
 
         public static bool IsOpen => view != null;
 
@@ -142,9 +146,19 @@ namespace DynamoInventor
                 return;
             }
 
-            if (!Dynamo.Wpf.Utilities.WebView2Utilities.ValidateWebView2RuntimeInstalled())
+            try
             {
-                return; // Dynamo has already told the user what to install.
+                if (!Dynamo.Wpf.Utilities.WebView2Utilities.ValidateWebView2RuntimeInstalled())
+                {
+                    return; // Dynamo has already told the user what to install.
+                }
+            }
+            catch (MissingMethodException ex)
+            {
+                // Inventor 2027 has WebView2 SDK 1.0.1210 loaded in the default load context; Dynamo 4.2 was
+                // built against 1.0.2478 and its check uses an overload the older SDK lacks. Inventor itself
+                // requires the WebView2 runtime, so treat it as present and carry on (diagnostic mode).
+                DynamoRuntime.Log("WebView2 SDK version conflict (continuing): " + ex.Message);
             }
 
             // Geometry: pair Dynamo's libG with the ASM Inventor already has in memory.
@@ -156,9 +170,9 @@ namespace DynamoInventor
             DynamoRuntime.Log("ASM " + asmVersion + " from " + asmFolder + "; libG " + preloaderLocation);
 
             var sw = Stopwatch.StartNew();
-            var config = Models.InventorDynamoModel.CreateConfiguration(
+            var config = Host.InventorDynamoModel.CreateConfiguration(
                 geometryFactoryPath, preloaderLocation, app.SoftwareVersion.DisplayVersion);
-            model = Models.InventorDynamoModel.Start(config);
+            model = Host.InventorDynamoModel.Start(config);
             DynamoRuntime.Log("DynamoModel " + Dynamo.Models.DynamoModel.Version + " started in " + sw.ElapsedMilliseconds + " ms");
 
             viewModel = Dynamo.ViewModels.DynamoViewModel.Start(new Dynamo.ViewModels.DynamoViewModel.StartConfiguration

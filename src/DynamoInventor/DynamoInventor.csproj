@@ -40,6 +40,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Dynamo-derived types live in Host; see the note in that project. -->
+    <ProjectReference Include="..\DynamoInventor.Host\DynamoInventor.Host.csproj" />
     <ProjectReference Include="..\Libraries\Inventor\DSInventorNodes\InventorLibrary.csproj" />
     <ProjectReference Include="..\Libraries\Inventor\InventorServices\InventorServices.csproj" />
   </ItemGroup>
