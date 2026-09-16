@@ -1,0 +1,10 @@
+<Project>
+  <!-- Central package versions. Dynamo packages must all share $(DynamoVersion) from Directory.Build.props. -->
+  <ItemGroup>
+    <PackageVersion Include="DynamoVisualProgramming.Core" Version="$(DynamoVersion)" />
+    <PackageVersion Include="DynamoVisualProgramming.DynamoServices" Version="$(DynamoVersion)" />
+    <PackageVersion Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="$(DynamoVersion)" />
+    <PackageVersion Include="DynamoVisualProgramming.WpfUILibrary" Version="$(DynamoVersion)" />
+    <PackageVersion Include="SimpleInjector" Version="5.6.0" />
+  </ItemGroup>
+</Project>

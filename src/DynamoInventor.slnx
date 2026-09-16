@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Libraries/" />
+  <Folder Name="/Libraries/Inventor/">
+    <Project Path="Libraries/Inventor/InventorServices/InventorServices.csproj" />
+  </Folder>
+  <Folder Name="/Libraries/Inventor/DSInventorNodes/">
+    <Project Path="Libraries/Inventor/DSInventorNodes/InventorLibrary.csproj" />
+  </Folder>
+  <Project Path="DynamoInventor/DynamoInventor.csproj" />
+</Solution>
