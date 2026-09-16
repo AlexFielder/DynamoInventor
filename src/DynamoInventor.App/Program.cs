@@ -16,6 +16,9 @@ namespace DynamoInventor.App
     /// Arguments:
     ///   --inventor-version 2027.1   host version for analytics and ASM year selection (optional)
     ///   --no-network                start Dynamo in no-network mode (optional)
+    ///   --open <file.dyn>           open a graph once the window is up and log its first run
+    ///   --smoke-test "<code>"       drop a code block with this DesignScript and log its run
+    ///   --then "<code>"             after that run, replace the block's code and log the re-run (update path)
     /// </summary>
     internal static class Program
     {
@@ -108,7 +111,13 @@ namespace DynamoInventor.App
                 var smokeTestCode = ArgValue(args, "--smoke-test");
                 if (smokeTestCode != null)
                 {
-                    view.Loaded += (s, e) => StartSmokeTest(model, smokeTestCode);
+                    view.Loaded += (s, e) => StartSmokeTest(model, smokeTestCode, ArgValue(args, "--then"));
+                }
+
+                var openPath = ArgValue(args, "--open");
+                if (openPath != null)
+                {
+                    view.Loaded += (s, e) => OpenGraph(model, viewModel, openPath);
                 }
                 app.Run(view);
                 DynamoRuntime.Log("=== DynamoInventor.App exit");
@@ -123,6 +132,31 @@ namespace DynamoInventor.App
                     "Dynamo for Inventor", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 return 1;
             }
+        }
+
+        /// <summary>Opens a .dyn and logs the outcome of its first run (RunType Automatic runs it on open).</summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void OpenGraph(Dynamo.Models.DynamoModel model, Dynamo.ViewModels.DynamoViewModel viewModel, string path)
+        {
+            DynamoRuntime.Log("OPEN: " + path);
+            model.EvaluationCompleted += (s, e) =>
+            {
+                try
+                {
+                    DynamoRuntime.Log("OPEN evaluation completed: succeeded=" + e.EvaluationSucceeded +
+                        (e.EvaluationSucceeded ? "" : "; error=" + e.Error?.Message));
+                    foreach (var n in model.CurrentWorkspace.Nodes)
+                    {
+                        var infos = string.Join(" | ", n.NodeInfos.Select(i => i.State + ": " + i.Message.Replace(Environment.NewLine, " ")));
+                        DynamoRuntime.Log("  node " + n.Name + ": state=" + n.State + (infos.Length == 0 ? "" : "; " + infos) + "; value=" + DescribeValue(n));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DynamoRuntime.Log("OPEN reporting failed: " + ex.Message);
+                }
+            };
+            viewModel.OpenCommand.Execute(path);
         }
 
         /// <summary>Logs the imported libraries and how many Inventor nodes made it into the search index.</summary>
@@ -151,16 +185,18 @@ namespace DynamoInventor.App
         ///   --smoke-test "InventorWorkPoint.ByPoint(Point.ByCoordinates(1,2,3));"
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void StartSmokeTest(Dynamo.Models.DynamoModel model, string code)
+        private static void StartSmokeTest(Dynamo.Models.DynamoModel model, string code, string thenCode)
         {
             DynamoRuntime.Log("SMOKE TEST: " + code);
             var node = new Dynamo.Graph.Nodes.CodeBlockNodeModel(code, 100, 100, model.LibraryServices, model.CurrentWorkspace.ElementResolver);
+            var runs = 0;
 
             model.EvaluationCompleted += (s, e) =>
             {
                 try
                 {
-                    DynamoRuntime.Log("SMOKE TEST evaluation completed: succeeded=" + e.EvaluationSucceeded +
+                    runs++;
+                    DynamoRuntime.Log("SMOKE TEST evaluation " + runs + " completed: succeeded=" + e.EvaluationSucceeded +
                         (e.EvaluationSucceeded ? "" : "; error=" + e.Error?.Message));
                     foreach (var n in model.CurrentWorkspace.Nodes)
                     {
@@ -175,6 +211,22 @@ namespace DynamoInventor.App
                     DynamoRuntime.Log("SMOKE TEST reporting failed: " + ex.Message);
                 }
             };
+
+            if (thenCode != null)
+            {
+                // After the first run, rewrite the code block (like a user editing it) so the same node
+                // re-executes: this exercises the trace re-binding / update-in-place path.
+                model.EvaluationCompleted += (s, e) =>
+                {
+                    if (runs != 1) return;
+                    DynamoRuntime.Log("SMOKE TEST then: " + thenCode);
+                    System.Windows.Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        model.ExecuteCommand(new Dynamo.Models.DynamoModel.UpdateModelValueCommand(
+                            model.CurrentWorkspace.Guid, node.GUID, "Code", thenCode));
+                    }));
+                };
+            }
 
             model.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(node, 100, 100, false, false));
         }

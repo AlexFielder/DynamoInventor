@@ -9,6 +9,9 @@
   <Project Path="DynamoInventor.App/DynamoInventor.App.csproj">
     <Platform Project="x64" />
   </Project>
+  <Project Path="DynamoInventor.Generator/DynamoInventor.Generator.csproj">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="DynamoInventor.Host/DynamoInventor.Host.csproj">
     <Platform Project="x64" />
   </Project>

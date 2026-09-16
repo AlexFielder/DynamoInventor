@@ -36,8 +36,6 @@
     <None Include="Autodesk.DynamoInventor.Inventor.addin" CopyToOutputDirectory="PreserveNewest" />
     <None Remove="Images\**" />
     <None Remove="doc\**" />
-    <None Remove="NodeGeneration\**" />
-    <Compile Remove="NodeGeneration\**" />
   </ItemGroup>
 
 </Project>
