@@ -156,7 +156,43 @@ namespace DynamoInventor.App
                     DynamoRuntime.Log("OPEN reporting failed: " + ex.Message);
                 }
             };
+            // Dynamo asks the user to trust a folder before running a graph from it, with a modal dialog that
+            // stalls an automated run until someone clicks it. Trust the graph's folder up front. Only
+            // DisableTrustWarnings is public, and that would persist globally into the user's preferences, so
+            // reach the per-folder AddTrustedLocation (internal in 4.2.1) by reflection instead.
+            var folder = Path.GetDirectoryName(Path.GetFullPath(path));
+            if (model.PreferenceSettings is Dynamo.Configuration.PreferenceSettings prefs && !prefs.IsTrustedLocation(folder))
+            {
+                var add = typeof(Dynamo.Configuration.PreferenceSettings).GetMethod("AddTrustedLocation",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+                if (add != null)
+                {
+                    add.Invoke(prefs, new object[] { folder });
+                    DynamoRuntime.Log("OPEN: added trusted location " + folder);
+                }
+                else
+                {
+                    DynamoRuntime.Log("OPEN: could not add trusted location (API changed); expect Dynamo's trust dialog");
+                }
+            }
+
+            var opened = Stopwatch.StartNew();
             viewModel.OpenCommand.Execute(path);
+            DynamoRuntime.Log("OPEN: file opened in " + opened.ElapsedMilliseconds + " ms");
+
+            if (model.CurrentWorkspace is Dynamo.Graph.Workspaces.HomeWorkspaceModel home)
+            {
+                home.EvaluationStarted += (s, e) => DynamoRuntime.Log("OPEN: evaluation started");
+                home.RefreshCompleted += (s, e) => DynamoRuntime.Log("OPEN: refresh (render packages) completed");
+
+                // Graphs saved in Manual mode do not run on open; press Run for them so the log has a result.
+                if (home.RunSettings.RunType == Dynamo.Models.RunType.Manual)
+                {
+                    DynamoRuntime.Log("OPEN: graph is in Manual mode; running it");
+                    model.ExecuteCommand(new Dynamo.Models.DynamoModel.RunCancelCommand(false, false));
+                    DynamoRuntime.Log("OPEN: run command issued");
+                }
+            }
         }
 
         /// <summary>Logs the imported libraries and how many Inventor nodes made it into the search index.</summary>
