@@ -40,74 +40,73 @@
       "Id": "afae14bd666b44ec904e62bc07023a03",
       "Name": "Bottom Radius (cm)",
       "Type": "number",
-      "Value": "0.9",
+      "Type2": "number",
+      "Value": "4.6",
       "MaximumValue": 15.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive.",
-      "SelectedIndex": 0
+      "Description": "Produces numeric values"
     },
     {
       "Id": "b2512d907f4940408eca206f99bc92d5",
       "Name": "Circle 2 Radius (cm)",
       "Type": "number",
-      "Value": "3.1",
+      "Type2": "number",
+      "Value": "5.5",
       "MaximumValue": 15.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive.",
-      "SelectedIndex": 0
+      "Description": "Produces numeric values"
     },
     {
       "Id": "21ff290ed4fb463bb4469a3e7d865d1a",
       "Name": "Circle 3 Radius (cm)",
       "Type": "number",
-      "Value": "1.3",
+      "Type2": "number",
+      "Value": "7.5",
       "MaximumValue": 15.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive.",
-      "SelectedIndex": 0
+      "Description": "Produces numeric values"
     },
     {
       "Id": "f684e80dcf404482a84b513ba064d474",
       "Name": "Height (cm)",
       "Type": "number",
-      "Value": "15",
+      "Type2": "number",
+      "Value": "20",
       "MaximumValue": 20.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive.",
-      "SelectedIndex": 0
+      "Description": "Produces numeric values"
     },
     {
       "Id": "aeb9f1ad57b244309a22e6c7970cd6d6",
       "Name": "Top Radius (cm)",
       "Type": "number",
-      "Value": "1.4",
+      "Type2": "number",
+      "Value": "5.1",
       "MaximumValue": 15.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive.",
-      "SelectedIndex": 0
+      "Description": "Produces numeric values"
     }
   ],
   "Outputs": [],
   "Nodes": [
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
-      "NodeType": "NumberInputNode",
       "NumberType": "Double",
       "MaximumValue": 15.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
-      "InputValue": 0.9,
       "Id": "afae14bd666b44ec904e62bc07023a03",
+      "NodeType": "NumberInputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -121,17 +120,17 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive."
+      "Description": "Produces numeric values",
+      "InputValue": 4.6
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
-      "NodeType": "NumberInputNode",
       "NumberType": "Double",
       "MaximumValue": 15.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
-      "InputValue": 3.1,
       "Id": "b2512d907f4940408eca206f99bc92d5",
+      "NodeType": "NumberInputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -145,17 +144,17 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive."
+      "Description": "Produces numeric values",
+      "InputValue": 5.5
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
-      "NodeType": "NumberInputNode",
       "NumberType": "Double",
       "MaximumValue": 15.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
-      "InputValue": 1.3,
       "Id": "21ff290ed4fb463bb4469a3e7d865d1a",
+      "NodeType": "NumberInputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -169,17 +168,17 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive."
+      "Description": "Produces numeric values",
+      "InputValue": 7.5
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
-      "NodeType": "NumberInputNode",
       "NumberType": "Double",
       "MaximumValue": 20.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
-      "InputValue": 15.0,
       "Id": "f684e80dcf404482a84b513ba064d474",
+      "NodeType": "NumberInputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -193,17 +192,17 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive."
+      "Description": "Produces numeric values",
+      "InputValue": 20.0
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
-      "NodeType": "NumberInputNode",
       "NumberType": "Double",
       "MaximumValue": 15.0,
       "MinimumValue": 0.1,
       "StepValue": 0.1,
-      "InputValue": 1.4,
       "Id": "aeb9f1ad57b244309a22e6c7970cd6d6",
+      "NodeType": "NumberInputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -217,13 +216,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Length in centimetres. 1 cm = 10 mm. Must be positive."
+      "Description": "Produces numeric values",
+      "InputValue": 5.1
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Id": "48a2f08419c24a24928c9e4067859069",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "9815629fac4c41dc99acf9eeb4ef8406",
@@ -255,14 +254,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
       "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Id": "d846352d651f4967ba83468b934e1efc",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "0fbbe73bb828455f8f8a780ec0bd3bc9",
@@ -294,14 +293,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
       "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Id": "d2115998651c451b9185b3d655617304",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "a2071f6bbb2f45e294bfdbca7d9e4014",
@@ -333,14 +332,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
       "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Id": "0db57803b8a84310986622190c88c441",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "68f0b309e8044ce6840b729297f2d526",
@@ -372,14 +371,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
       "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "x*0.3;\nx*0.7;\nx;",
       "Id": "14f331cd7e4b4654bf61a6e95eb243e0",
+      "NodeType": "CodeBlockNode",
       "Inputs": [
         {
           "Id": "071aff6a11f74ac985e864972c3636de",
@@ -394,8 +393,8 @@
       "Outputs": [
         {
           "Id": "13c1b1cebf584afcaf464f430a437d22",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Name": "function",
+          "Description": "x * 0.3",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -403,8 +402,8 @@
         },
         {
           "Id": "9964bfed3665493a9a4046a77799a94c",
-          "Name": "",
-          "Description": "Value of expression at line 2",
+          "Name": "function",
+          "Description": "x * 0.7",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -412,8 +411,8 @@
         },
         {
           "Id": "7d5ca27410fb44648052270d6ad8f3c5",
-          "Name": "",
-          "Description": "Value of expression at line 3",
+          "Name": "x",
+          "Description": "x",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -421,13 +420,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "x*0.3;\nx*0.7;\nx;"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Id": "dac24dce2cac4ec6afba20f3e3049fe6",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "5d97b77cddd5487bb685bc1e16502236",
@@ -477,14 +476,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
       "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Id": "be93f6d01f71469b989660dc052b3e9e",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "f778503dcea14a02b81fe32773633f2c",
@@ -534,14 +533,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
       "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Id": "8632c360c4cc42ac81cdca36cc6a5c90",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "caa3e40c893542bf8481923b602d5167",
@@ -591,14 +590,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
       "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Id": "87d7baf0b56248dfa09c5933db7343a0",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "c58bc1455048442aa1627f1a3e43c809",
@@ -621,14 +620,15 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
       "Description": "Create a Surface by lofting between input cross section Curves.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
       "VariableInputPorts": true,
-      "NodeType": "ExtensionNode",
       "Id": "df0a2777a4424710bb2d35bdcc80f2ee",
+      "NodeType": "ExtensionNode",
       "Inputs": [
         {
           "Id": "eecc5cd39e704271bbefbf17ded859d2",
@@ -679,7 +679,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list out of the given inputs"
+      "Description": "Makes a new list from the given inputs"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -689,7 +689,7 @@
         {
           "Id": "fc2d4a5e036f4018a66294aeef38617a",
           "Name": "sections",
-          "Description": "Four circular sections in bottom-to-top order (cm).",
+          "Description": "sections",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -700,7 +700,7 @@
         {
           "Id": "930776159e97487d8ef57a144501d7e2",
           "Name": "function",
-          "Description": "Status of the native Inventor surface loft.",
+          "Description": "InventorLibrary.Features.InventorVase.ByCircles(sections, \"DynamoVase\")",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -818,6 +818,7 @@
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": false,
   "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
@@ -839,10 +840,10 @@
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
-      "HasRunWithoutCrash": false,
+      "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
       "Version": "4.2.1.5887",
-      "RunType": "Manual",
+      "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -860,154 +861,154 @@
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Name": "Bottom Radius (cm)",
-        "ShowGeometry": false,
         "Id": "afae14bd666b44ec904e62bc07023a03",
+        "Name": "Bottom Radius (cm)",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 0,
-        "Y": 40
+        "ShowGeometry": false,
+        "X": 0.0,
+        "Y": 40.0
       },
       {
-        "Name": "Circle 2 Radius (cm)",
-        "ShowGeometry": false,
         "Id": "b2512d907f4940408eca206f99bc92d5",
+        "Name": "Circle 2 Radius (cm)",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 0,
-        "Y": 280
+        "ShowGeometry": false,
+        "X": 0.0,
+        "Y": 280.0
       },
       {
-        "Name": "Circle 3 Radius (cm)",
-        "ShowGeometry": false,
         "Id": "21ff290ed4fb463bb4469a3e7d865d1a",
+        "Name": "Circle 3 Radius (cm)",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 0,
-        "Y": 520
+        "ShowGeometry": false,
+        "X": 0.0,
+        "Y": 520.0
       },
       {
-        "Name": "Height (cm)",
-        "ShowGeometry": false,
         "Id": "f684e80dcf404482a84b513ba064d474",
+        "Name": "Height (cm)",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 0,
-        "Y": 1000
+        "ShowGeometry": false,
+        "X": 0.0,
+        "Y": 1000.0
       },
       {
-        "Name": "Top Radius (cm)",
-        "ShowGeometry": false,
         "Id": "aeb9f1ad57b244309a22e6c7970cd6d6",
+        "Name": "Top Radius (cm)",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 0,
-        "Y": 760
+        "ShowGeometry": false,
+        "X": 0.0,
+        "Y": 760.0
       },
       {
-        "Name": "Circle.ByCenterPointRadius",
-        "ShowGeometry": false,
         "Id": "48a2f08419c24a24928c9e4067859069",
+        "Name": "Circle.ByCenterPointRadius",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 370,
-        "Y": 520
+        "ShowGeometry": false,
+        "X": 370.0,
+        "Y": 520.0
       },
       {
-        "Name": "Circle.ByCenterPointRadius",
-        "ShowGeometry": false,
         "Id": "d846352d651f4967ba83468b934e1efc",
+        "Name": "Circle.ByCenterPointRadius",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 370,
-        "Y": 280
+        "ShowGeometry": false,
+        "X": 370.0,
+        "Y": 280.0
       },
       {
-        "Name": "Circle.ByCenterPointRadius",
-        "ShowGeometry": false,
         "Id": "d2115998651c451b9185b3d655617304",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 370,
-        "Y": 760
-      },
-      {
         "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
         "ShowGeometry": false,
+        "X": 370.0,
+        "Y": 760.0
+      },
+      {
         "Id": "0db57803b8a84310986622190c88c441",
+        "Name": "Circle.ByCenterPointRadius",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 370,
-        "Y": 40
+        "ShowGeometry": false,
+        "X": 370.0,
+        "Y": 40.0
       },
       {
-        "Name": "Code Block",
-        "ShowGeometry": false,
         "Id": "14f331cd7e4b4654bf61a6e95eb243e0",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 370,
-        "Y": 1030
+        "ShowGeometry": false,
+        "X": 370.0,
+        "Y": 1030.0
       },
       {
-        "Name": "Geometry.Translate",
-        "ShowGeometry": false,
         "Id": "dac24dce2cac4ec6afba20f3e3049fe6",
+        "Name": "Geometry.Translate",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 730,
-        "Y": 280
+        "ShowGeometry": false,
+        "X": 730.0,
+        "Y": 280.0
       },
       {
-        "Name": "Geometry.Translate",
-        "ShowGeometry": false,
         "Id": "be93f6d01f71469b989660dc052b3e9e",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 730,
-        "Y": 520
-      },
-      {
         "Name": "Geometry.Translate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
         "ShowGeometry": false,
+        "X": 730.0,
+        "Y": 520.0
+      },
+      {
         "Id": "8632c360c4cc42ac81cdca36cc6a5c90",
+        "Name": "Geometry.Translate",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 730,
-        "Y": 760
-      },
-      {
-        "Name": "Surface.ByLoft",
-        "ShowGeometry": true,
-        "Id": "87d7baf0b56248dfa09c5933db7343a0",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1420,
-        "Y": 200
-      },
-      {
-        "Name": "List.Create",
         "ShowGeometry": false,
-        "Id": "df0a2777a4424710bb2d35bdcc80f2ee",
+        "X": 730.0,
+        "Y": 760.0
+      },
+      {
+        "Id": "87d7baf0b56248dfa09c5933db7343a0",
+        "Name": "Surface.ByLoft",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1120,
-        "Y": 400
+        "ShowGeometry": true,
+        "X": 1526.666666666667,
+        "Y": 136.66666666666669
+      },
+      {
+        "Id": "df0a2777a4424710bb2d35bdcc80f2ee",
+        "Name": "List.Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1160.0,
+        "Y": 253.33333333333337
       },
       {
         "Id": "339f760903b740558e60044694f2b9b7",
@@ -1016,14 +1017,13 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": false,
-        "X": 1420.0,
-        "Y": 640.0
+        "X": 1533.3333333333335,
+        "Y": 455.0
       }
     ],
     "Annotations": [],
-    "X": 20.0,
-    "Y": 20.0,
-    "Zoom": 0.6
-  },
-  "EnableLegacyPolyCurveBehavior": null
+    "X": 43.0,
+    "Y": 49.68939272552478,
+    "Zoom": 0.5335683384073064
+  }
 }
